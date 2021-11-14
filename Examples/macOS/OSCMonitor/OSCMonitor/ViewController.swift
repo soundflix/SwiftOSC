@@ -17,13 +17,13 @@ class ViewController: NSViewController, NSTableViewDataSource, OSCServerDelegate
     
     var tableData: [TableData] = []
     var addressValue = OSCAddress()
-
+    
     @IBOutlet weak var port: NSTextField!
     @IBOutlet weak var address: NSTextField!
     @IBOutlet weak var tableView: NSTableView!
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         server.port = defaults.integer(forKey: "Port")
         self.port.stringValue = String(server.port)
@@ -37,13 +37,13 @@ class ViewController: NSViewController, NSTableViewDataSource, OSCServerDelegate
         tableView.dataSource = self
         
     }
-
+    
     override var representedObject: Any? {
         didSet {
-        // Update the view, if already loaded.
+            // Update the view, if already loaded.
         }
     }
-
+    
     //add osc data from notification
     func didReceive(_ message: OSCMessage) {
         print(message)

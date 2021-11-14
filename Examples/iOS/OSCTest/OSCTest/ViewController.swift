@@ -53,7 +53,7 @@ class ViewController: UIViewController {
         
         client = OSCClient(address: ipAddress, port: port)
         
-        _ = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { (_) in
+        _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (_) in
             let message = OSCMessage(address, 0, 0.0, true, "hello world")
             client.send(message)
         }

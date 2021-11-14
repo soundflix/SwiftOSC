@@ -12,6 +12,7 @@ extension Data {
     func toInt32() -> Int32 {
         var int = Int32()
         let buffer = UnsafeMutableBufferPointer(start: &int, count: 1)
+//        let buffer = UnsafeMutableBufferPointer<Int32>.allocate(capacity: 1) // https://stackoverflow.com/questions/60869370/unsafemutablepointer-warning-with-swift-5
         _ = self.copyBytes(to: buffer)
         
         return int.byteSwapped
@@ -79,7 +80,9 @@ extension Int64 {
 }
 extension String {
     func toData()->Data{
-        return self.data(using: String.Encoding.utf8)!
+        guard let resultData = self.data(using: String.Encoding.utf8) else { return self.data }
+        return resultData
+//        return self.data(using: String.Encoding.utf8)! // debug: TotalMix sends invalid bundle when switching servers, causing SwiftOSC to crash !
     }
     
     // add padding to string

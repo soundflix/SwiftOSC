@@ -34,7 +34,7 @@ public class OSCMessage: OSCElement, CustomStringConvertible {
         }
     }
     public var description: String {
-        var description = "OSCMessage [Address<\(self.address.string)>"
+        var description = "🟨 sending OSCMessage [Address<\(self.address.string)>"
         
         for argument in self.arguments {
             
