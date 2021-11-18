@@ -26,5 +26,6 @@ let package = Package(
         .target(
             name: "SwiftOSC",
             dependencies: []),
+	    path: "./Framework/SwiftOSC",
     ]
 )
