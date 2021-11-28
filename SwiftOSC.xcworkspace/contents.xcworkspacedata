@@ -30,9 +30,6 @@
          location = "group:macOS"
          name = "macOS">
          <FileRef
-            location = "group:RMEite/RMEite.xcodeproj">
-         </FileRef>
-         <FileRef
             location = "group:OSCMonitor/OSCMonitor.xcodeproj">
          </FileRef>
       </Group>

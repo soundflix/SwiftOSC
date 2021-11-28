@@ -14,7 +14,7 @@ import SwiftOSC
 // Setup Client. Change address from localhost if needed.
 var client = OSCClient(address: "localhost", port: 8080)
 
-var address = OSCAddressPattern("/")
+var address = OSCAddressPattern("/OSCTest/")
 
 class ViewController: UIViewController {
     
@@ -25,6 +25,8 @@ class ViewController: UIViewController {
     var ipAddress = "localhost"
     var port = 8080
     var text = ""
+    
+    var bundleTimer: Timer!
     
     // UI Elements
     @IBOutlet weak var ipAddressLabel: UITextField!
@@ -53,10 +55,17 @@ class ViewController: UIViewController {
         
         client = OSCClient(address: ipAddress, port: port)
         
-        _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (_) in
-            let message = OSCMessage(address, 0, 0.0, true, "hello world")
-            client.send(message)
-        }
+//            self.bundleTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { (_) in
+////            var message = OSCMessage(address, 0, 0.0, true, "hello world")
+////            client.send(message)
+//
+//             var message = OSCMessage(OSCAddressPattern("/test"), 110, 5.0, "Hello World", Blob(), true, false, nil, Timetag(1))
+////            var message = OSCMessage(OSCAddressPattern("/test"), 110, 5.0, "Hello World", Blob(), true, false, nil, Timetag(1))
+//            //: Create a bundle
+//            // If the server fully supports timetags, like SwiftOSC, the bundle will be delivered at the correct time.
+//            var bundle = OSCBundle(Timetag(secondsSinceNow: 5.0), message)
+//            client.send(bundle)
+//        }
         
     }
 
@@ -102,6 +111,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func slider(_ sender: UISlider) {
+        print(sender.value)
         let message = OSCMessage(address, sender.value)
         client.send(message)
     }
@@ -109,6 +119,25 @@ class ViewController: UIViewController {
     @IBAction func switcher(_ sender: UISwitch) {
         let message = OSCMessage(address, sender.isOn)
         client.send(message)
+        
+        print("bundleTimer \(sender.isOn)")
+        if sender.isOn {
+//            self.bundleTimer.fire()
+            self.bundleTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { (_) in
+//            var message = OSCMessage(address, 0, 0.0, true, "hello world")
+//            client.send(message)
+            
+             var message = OSCMessage(OSCAddressPattern("/timedBundle"), 110, 5.0, "Hello World", Blob(), true, false, nil, Timetag(1))
+//            var message = OSCMessage(OSCAddressPattern("/test"), 110, 5.0, "Hello World", Blob(), true, false, nil, Timetag(1))
+            //: Create a bundle
+            // If the server fully supports timetags, like SwiftOSC, the bundle will be delivered at the correct time.
+            var bundle = OSCBundle(Timetag(secondsSinceNow: 5.0), message)
+                print(bundle)
+            client.send(bundle)
+        }
+        } else {
+            if self.bundleTimer != nil { self.bundleTimer.invalidate() }
+        }
     }
     
     @IBAction func impulse(_ sender: UIButton) {
