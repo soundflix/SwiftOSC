@@ -11,28 +11,25 @@ import Network
 
 public class OSCClient {
 
-    public var connection: NWConnection? // Access Control: changed 'var connection: NWConnection?' to public.
+    public var connection: NWConnection?
     var queue: DispatchQueue
+    public var serviceType: String? = "_osc._udp"
+    public var browser: NWBrowser?
 
-    public private(set) var host: NWEndpoint.Host
-    public private(set) var port: NWEndpoint.Port
-
-    public init?(host: String, port: Int) {
-
-        // check if string is empty
-        if host == "" {
-
-            NSLog("Invalid Hostname: No empty strings allowed.")
-            return nil
-
+    public private(set) var host: NWEndpoint.Host?
+    public private(set) var port: NWEndpoint.Port?
+    
+    public init(serviceType:String) {
+            self.serviceType = serviceType
+//            super.init()
+        queue = DispatchQueue(label: "SwiftOSC Client") // better use .main ?
+            self.startBrowsing()
         }
-        if port > 65535 || port <= 0 {
-            NSLog("Invalid Port: Out of range.")
-            return nil
-        }
+
+    public init(host: String, port: UInt16) {
 
         self.host = NWEndpoint.Host(host)
-        self.port = NWEndpoint.Port(integerLiteral: UInt16(port))
+        self.port = NWEndpoint.Port(rawValue: port)!
 
         queue = DispatchQueue(label: "SwiftOSC Client")
         setupConnection()
@@ -40,36 +37,73 @@ public class OSCClient {
 
     func setupConnection(){
 
+        let params = NWParameters.udp
+        params.serviceClass = .signaling // DEBUG: test if this is really faster than '.best-effort'
+        
         // create the connection
-        connection = NWConnection(host: host, port: port, using: .udp)
-
-        // setup state update handler
-        connection?.stateUpdateHandler = { [weak self] (newState) in
-            switch newState {
-            case .ready:
-                NSLog("SwiftOSC Client is ready. \(String(describing: self?.connection))")
-            case .failed(let error):
-                NSLog("SwiftOSC Client failed with error \(error)")
-                NSLog("SWiftOSC Client is restarting.")
-                self?.setupConnection()
-            case .cancelled:
-                NSLog("SWiftOSC Client cancelled.")
-                break
-            case .waiting(let error):
-                NSLog("SwiftOSC Client waiting with error \(error)")
-            case .preparing:
-                NSLog("SWiftOSC Client is preparing.")
-                break
-            case .setup:
-                NSLog("SWiftOSC Client is setting up.")
-                break
-            @unknown default:
-            fatalError()
-            }
+        if let host = self.host, let port = self.port {
+            connection = NWConnection(host: host, port: port, using: params)
+            // TODO make custom connection class to reuse with bonjour variant
         }
+            
+        // setup state update handler
+        connection?.stateUpdateHandler = stateUpdateHandler(newState:)
+//        connection?.stateUpdateHandler = { [weak self] (newState) in
+//            switch newState {
+//            case .ready:
+//                NSLog("SwiftOSC Client is ready. \(String(describing: self?.connection))")
+//            case .failed(let error):
+//                NSLog("SwiftOSC Client failed with error \(error)")
+//                NSLog("SWiftOSC Client is restarting.")
+//                self?.setupConnection()
+//            case .cancelled:
+//                NSLog("SWiftOSC Client cancelled.")
+//                break
+//            case .waiting(let error):
+//                NSLog("SwiftOSC Client waiting with error \(error)")
+//            case .preparing:
+//                NSLog("SWiftOSC Client is preparing.")
+//                break
+//            case .setup:
+//                NSLog("SWiftOSC Client is setting up.")
+//                break
+//            @unknown default:
+//            fatalError()
+//            }
+//        }
 
         // start the connection
         connection?.start(queue: queue)
+
+    }
+    
+    func stateUpdateHandler(newState: NWConnection.State) {
+        switch newState {
+        case .ready:
+            NSLog("SwiftOSC Client is ready. \(String(describing: self.connection))")
+        case .failed(let error):
+            NSLog("SwiftOSC Client failed with error \(error)")
+            NSLog("SWiftOSC Client is restarting.")
+            self.setupConnection()
+        case .cancelled:
+            NSLog("SWiftOSC Client cancelled.")
+            break
+        case .waiting(let error):
+            NSLog("SwiftOSC Client waiting with error \(error)")
+        case .preparing:
+            NSLog("SWiftOSC Client is preparing.")
+            break
+        case .setup:
+            NSLog("SWiftOSC Client is setting up.")
+            break
+        @unknown default:
+        fatalError()
+        }
+    }
+    
+    public func startBrowsing() {
+      // TODO
+        print("NWBrowser not yet implemented")
     }
 
     public func send(_ element: OSCElement){
