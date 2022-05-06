@@ -22,21 +22,15 @@ public class OSCServer {
     
     var bonjour: Bool = false
     
-    public init?(port: Int, bonjourName: String? = nil, domain: String? = nil) {
+    public init?(port: UInt16, bonjourName: String? = nil, domain: String? = nil) {
         
         self.domain = domain
-        
-        // check port range
-        if port > 65535 || port <= 0 {
-            NSLog("Invalid Port: Out of range.")
-            return nil
-        }
-        
+                
         if let bonjourName = bonjourName {
             bonjour = true
             self.name = bonjourName
         }
-        self.port = NWEndpoint.Port(integerLiteral: UInt16(port))
+        self.port = NWEndpoint.Port(rawValue: port)!
         queue = DispatchQueue(label: "SwiftOSC Server") // or .main
         
         setupListener()
@@ -47,10 +41,13 @@ public class OSCServer {
         // advertise Bonjour
         let udpOption = NWProtocolUDP.Options()
         let params = NWParameters(dtls: nil, udp: udpOption)
+        params.allowLocalEndpointReuse = true
+//        params.allowFastOpen = true
+        params.serviceClass = .signaling // DEBUG: test if this is really faster than '.best-effort'
         //if bonjour { params.includePeerToPeer = true }
         
         // create the listener
-        listener = try! NWListener(using: params, on: port)
+        listener = try! NWListener(using: params, on: port) // force-unwrapped
         
         // Bonjour service
         if bonjour { listener?.service = NWListener.Service(name: name,
@@ -79,7 +76,7 @@ public class OSCServer {
             guard let self = self else { print("SwiftOSC Server stateUpdateHandler error"); return }
             switch newState {
             case .ready:
-                NSLog("\(self.name ?? "SwiftOSC server"): Listening on port \(String(describing: self.listener?.port)), delegate: \(String(describing: self.delegate))")
+                NSLog("\(self.name ?? "SwiftOSC server"): Listening on port \(String(describing: self.listener?.port ?? 0)), delegate: \(String(describing: self.delegate.debugDescription ))")
             case .failed(let error):
                 NSLog("\(self.name ?? "SwiftOSC server"): Listener failed with error \(error)")
                 self.restart()
