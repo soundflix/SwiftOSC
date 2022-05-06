@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "SwiftOSC",
 	 platforms: [
-			  .macOS(.v10_14),
+			  .macOS(.v10_15),
 			  .iOS(.v12),
 			  .watchOS(.v5)
 		 ],
