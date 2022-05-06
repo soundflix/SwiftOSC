@@ -38,7 +38,7 @@ public class OSCServer {
     
     func setupListener() {
         
-        // advertise Bonjour
+        /// advertise Bonjour
         let udpOption = NWProtocolUDP.Options()
         let params = NWParameters(dtls: nil, udp: udpOption)
         params.allowLocalEndpointReuse = true
@@ -46,23 +46,23 @@ public class OSCServer {
         params.serviceClass = .signaling // DEBUG: test if this is really faster than '.best-effort'
         //if bonjour { params.includePeerToPeer = true }
         
-        // create the listener
+        /// create the listener
         listener = try! NWListener(using: params, on: port) // force-unwrapped
         
-        // Bonjour service
+        /// Bonjour service
         if bonjour { listener?.service = NWListener.Service(name: name,
                                                             type: "_osc._udp",
                                                             domain: domain)
         }
         
-        // handle incoming connections server will only respond to the latest connection
+        /// handle incoming connections server will only respond to the latest connection
         listener?.newConnectionHandler = { [weak self] (newConnection) in
             guard let self = self else { print("SwiftOSC Server newConnectionHandler error"); return }
-            NSLog("\(self.name ?? "SwiftOSC server"): New Connection from \(String(describing: newConnection))")
+            NSLog("SwiftOSC server '\(self.name ?? "<noName>")': New Connection from \(String(describing: newConnection))")
             
-            // cancel previous connection // check if it's own port
+            /// cancel previous connection // check if it's own port
             if self.connection != nil {
-                NSLog("\(self.name ?? "SwiftOSC server"): Cancelling connection: \(String(describing: newConnection))")
+                NSLog("SwiftOSC server '\(self.name ?? "<noName>")': Cancelling connection: \(String(describing: newConnection))")
                 self.connection?.cancel()
             }
             
@@ -71,27 +71,27 @@ public class OSCServer {
             self.receive()
         }
                 
-        // Handle listener state changes
+        /// Handle listener state changes
         listener?.stateUpdateHandler = { [weak self] (newState) in
             guard let self = self else { print("SwiftOSC Server stateUpdateHandler error"); return }
             switch newState {
             case .ready:
-                NSLog("\(self.name ?? "SwiftOSC server"): Listening on port \(String(describing: self.listener?.port ?? 0)), delegate: \(String(describing: self.delegate.debugDescription ))")
+                NSLog("SwiftOSC server '\(self.name ?? "<noName>")': Ready, listening on port \(String(describing: self.listener?.port ?? 0)), delegate: \(String(describing: self.delegate.debugDescription.dropLast(1).dropFirst(9) ))")
             case .failed(let error):
-                NSLog("\(self.name ?? "SwiftOSC server"): Listener failed with error \(error)")
+                NSLog("SwiftOSC server '\(self.name ?? "<noName>")': Listener failed with error \(error)")
                 self.restart()
             case .cancelled:
-                NSLog("\(self.name ?? "SwiftOSC server"): Listener cancelled")
+                NSLog("SwiftOSC server '\(self.name ?? "<noName>")': Listener cancelled")
             default:
                 break
             }
         }
         
-        // start the listener
+        /// start the listener
         listener?.start(queue: queue)
     }
     
-    // receive
+    /// receive
     func receive() {
         connection?.receiveMessage { [weak self] (content, context, isCompleted, error) in
             if let data = content {
@@ -118,7 +118,7 @@ public class OSCServer {
                 self.sendToDelegate(message)
             }
             
-        } else if data.count > 8 {//make sure we have at least 8 bytes before checking if a bundle.
+        } else if data.count > 8 { /// make sure we have at least 8 bytes before checking if a bundle.
             if "#bundle\0".toData() == data.subdata(in: Range(0...7)){//matches string #bundle
                 if let bundle = decodeBundle(data){
                     self.sendToDelegate(bundle)
@@ -131,7 +131,7 @@ public class OSCServer {
     
     func decodeBundle(_ data: Data)->OSCBundle? {
         
-        //extract timetag
+        /// extract timetag
         let bundle = OSCBundle(OSCTimetag(data.subdata(in: 8..<16)))
         
         var bundleData = data.subdata(in: 16..<data.count)
@@ -167,14 +167,14 @@ public class OSCServer {
         var messageData = data
         var message: OSCMessage
         
-        //extract address and check if valid
+        /// extract address and check if valid
         if let addressEnd = messageData.firstIndex(of: 0x00){
             
             let addressString = messageData.subdata(in: 0..<addressEnd).toString()
             if let address = OSCAddressPattern(addressString) {
                 message = OSCMessage(address)
                 
-                //extract types
+                /// extract types
                 messageData = messageData.subdata(in: (addressEnd/4+1)*4..<messageData.count)
                 
                 // TotalMix Bulk data crash
@@ -195,17 +195,17 @@ public class OSCServer {
                 
                 for char in type {
                     switch char {
-                    case "i"://int
+                    case "i": /// int
                         message.add(Int(messageData.subdata(in: Range(0...3))))
                         messageData = messageData.subdata(in: 4..<messageData.count)
-                    case "f"://float
+                    case "f": /// float
                         message.add(Float(messageData.subdata(in: Range(0...3))))
                         messageData = messageData.subdata(in: 4..<messageData.count)
-                    case "s"://string
+                    case "s": /// string
                         let stringEnd = messageData.firstIndex(of: 0x00)!
                         message.add(String(messageData.subdata(in: 0..<stringEnd)))
                         messageData = messageData.subdata(in: (stringEnd/4+1)*4..<messageData.count)
-                    case "b": //blob
+                    case "b": /// blob
                         var length = Int(messageData.subdata(in: Range(0...3)).toInt32())
                         messageData = messageData.subdata(in: 4..<messageData.count)
                         message.add(OSCBlob(messageData.subdata(in: 0..<length)))
@@ -214,15 +214,15 @@ public class OSCServer {
                         }
                         messageData = messageData.subdata(in: length..<messageData.count)
                         
-                    case "T"://true
+                    case "T": /// true
                         message.add(true)
-                    case "F"://false
+                    case "F": /// false
                         message.add(false)
-                    case "N"://null
+                    case "N": /// null
                         message.add()
-                    case "I"://impulse
+                    case "I": /// impulse
                         message.add(OSCImpulse())
-                    case "t"://timetag
+                    case "t": /// timetag
                         message.add(OSCTimetag(messageData.subdata(in: Range(0...7))))
                         messageData = messageData.subdata(in: 8..<messageData.count)
                     default:
@@ -240,6 +240,7 @@ public class OSCServer {
             return nil
         }
     }
+    
     func sendToDelegate(_ element: OSCElement){
         DispatchQueue.main.async { [weak self] in
             guard let strongSelf = self else { return }
@@ -248,7 +249,7 @@ public class OSCServer {
             }
             if let bundle = element as? OSCBundle {
                 
-                // send to delegate at the correct time
+                /// send to delegate at the correct time
                 if bundle.timetag.secondsSinceNow < 0 {
                     strongSelf.delegate?.didReceive(bundle)
                     for element in bundle.elements {
@@ -268,17 +269,18 @@ public class OSCServer {
         }
     }
     
+    /// cancel connection and listener
     public func stop() {
-        // destroy connection and listener
         connection?.forceCancel()
         listener?.cancel()
         // listener = nil
     }
     
+    /// cancel conection and listener, then start with refreshed settings
     public func restart() {
         stop()
         
-        // setup new listener
+        /// setup new listener
         setupListener()
     }
 }
