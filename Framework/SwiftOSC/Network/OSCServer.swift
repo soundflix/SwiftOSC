@@ -58,11 +58,11 @@ public class OSCServer {
         /// handle incoming connections server will only respond to the latest connection
         listener?.newConnectionHandler = { [weak self] (newConnection) in
             guard let self = self else { print("SwiftOSC Server newConnectionHandler error"); return }
-            NSLog("SwiftOSC server '\(self.name ?? "<noName>")': New Connection from \(String(describing: newConnection))")
+            NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': New Connection from \(String(describing: newConnection))")
             
             /// cancel previous connection // check if it's own port
             if self.connection != nil {
-                NSLog("SwiftOSC server '\(self.name ?? "<noName>")': Cancelling connection: \(String(describing: newConnection))")
+                NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Cancelling connection: \(String(describing: newConnection))")
                 self.connection?.cancel()
             }
             
@@ -76,12 +76,12 @@ public class OSCServer {
             guard let self = self else { print("SwiftOSC Server stateUpdateHandler error"); return }
             switch newState {
             case .ready:
-                NSLog("SwiftOSC server '\(self.name ?? "<noName>")': Ready, listening on port \(String(describing: self.listener?.port ?? 0)), delegate: \(String(describing: self.delegate.debugDescription.dropLast(1).dropFirst(9) ))")
+                NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Ready, listening on port \(String(describing: self.listener?.port ?? 0)), delegate: \(String(describing: self.delegate.debugDescription.dropLast(1).dropFirst(9) ))")
             case .failed(let error):
-                NSLog("SwiftOSC server '\(self.name ?? "<noName>")': Listener failed with error \(error)")
+                NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener failed with \(error)")
                 self.restart()
             case .cancelled:
-                NSLog("SwiftOSC server '\(self.name ?? "<noName>")': Listener cancelled")
+                NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener cancelled")
             default:
                 break
             }
@@ -242,6 +242,7 @@ public class OSCServer {
     }
     
     func sendToDelegate(_ element: OSCElement){
+        
         DispatchQueue.main.async { [weak self] in
             guard let strongSelf = self else { return }
             if let message = element as? OSCMessage {
