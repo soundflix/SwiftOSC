@@ -17,7 +17,7 @@ public class OSCServer {
     public private(set) var port: NWEndpoint.Port
     public private(set) var name: String?
     public private(set) var domain: String?
-    var queue: DispatchQueue
+    public var queue: DispatchQueue // mock
     public var connection: NWConnection?
     
     var bonjour: Bool = false
@@ -92,7 +92,7 @@ public class OSCServer {
     }
     
     /// receive
-    func receive() {
+    public func receive() { // mock
         connection?.receiveMessage { [weak self] (content, context, isCompleted, error) in
             if let data = content {
                 // data.printHexString()
