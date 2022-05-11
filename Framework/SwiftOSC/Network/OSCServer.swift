@@ -31,11 +31,13 @@ public class OSCServer {
             self.name = bonjourName
         }
         
-        if (1 ... 65535).contains(port) {
-            self.port = NWEndpoint.Port(rawValue: port)!
-        } else {
-            self.port = NWEndpoint.Port(rawValue: 1)!
-        }
+//        if (1 ... 65535).contains(port) {
+//            self.port = NWEndpoint.Port(rawValue: port)!
+//        } else {
+//            self.port = NWEndpoint.Port.any
+//        }
+        self.port = NWEndpoint.Port(rawValue: port) ?? NWEndpoint.Port.any
+        
         queue = DispatchQueue(label: "SwiftOSC Server") // or .main
         
         setupListener()
