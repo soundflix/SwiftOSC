@@ -17,7 +17,7 @@ public class OSCServer {
     public private(set) var port: NWEndpoint.Port
     public private(set) var name: String?
     public private(set) var domain: String?
-    public var queue: DispatchQueue // mock
+    public var queue: DispatchQueue
     public var connection: NWConnection?
     
     var bonjour: Bool = false
@@ -30,7 +30,12 @@ public class OSCServer {
             bonjour = true
             self.name = bonjourName
         }
-        self.port = NWEndpoint.Port(rawValue: port)!
+        
+        if (1 ... 65535).contains(port) {
+            self.port = NWEndpoint.Port(rawValue: port)!
+        } else {
+            self.port = NWEndpoint.Port(rawValue: 1)!
+        }
         queue = DispatchQueue(label: "SwiftOSC Server") // or .main
         
         setupListener()
@@ -44,18 +49,23 @@ public class OSCServer {
         params.allowLocalEndpointReuse = true
 //        params.allowFastOpen = true
         params.serviceClass = .signaling // DEBUG: test if this is really faster than '.best-effort'
-        //if bonjour { params.includePeerToPeer = true }
+//         if bonjour { params.includePeerToPeer = true }
         
         /// create the listener
-        listener = try! NWListener(using: params, on: port) // force-unwrapped
-        
-        /// Bonjour service
-        if bonjour { listener?.service = NWListener.Service(name: name,
-                                                            type: "_osc._udp",
-                                                            domain: domain)
+        do {
+            listener = try NWListener(using: params, on: port)
+        } catch let error {
+            NSLog("SwiftOSC Server failed to create listener: \(error)")
         }
         
-        /// handle incoming connections server will only respond to the latest connection
+        /// Bonjour service
+        if bonjour {
+            listener?.service = NWListener.Service(name: name,
+                                                   type: "_osc._udp",
+                                                   domain: domain)
+        }
+        
+        /// handle incoming connections server will only connect to the latest connection
         listener?.newConnectionHandler = { [weak self] (newConnection) in
             guard let self = self else { print("SwiftOSC Server newConnectionHandler error"); return }
             NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': New Connection from \(String(describing: newConnection))")
@@ -92,7 +102,7 @@ public class OSCServer {
     }
     
     /// receive
-    public func receive() { // mock
+    public func receive() {
         connection?.receiveMessage { [weak self] (content, context, isCompleted, error) in
             if let data = content {
                 // data.printHexString()
@@ -272,7 +282,8 @@ public class OSCServer {
     
     /// cancel connection and listener
     public func stop() {
-        connection?.forceCancel()
+//        connection?.forceCancel()
+        connection?.cancel()
         listener?.cancel()
         // listener = nil
     }

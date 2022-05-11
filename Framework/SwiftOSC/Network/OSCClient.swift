@@ -29,7 +29,11 @@ public class OSCClient {
     public init(host: String, port: UInt16) {
 
         self.host = NWEndpoint.Host(host)
-        self.port = NWEndpoint.Port(rawValue: port)!
+        if (1 ... 65535).contains(port) {
+            self.port = NWEndpoint.Port(rawValue: port)!
+        } else {
+            self.port = NWEndpoint.Port(rawValue: 1)!
+        }
 
         queue = DispatchQueue(label: "SwiftOSC Client")
         setupConnection()
