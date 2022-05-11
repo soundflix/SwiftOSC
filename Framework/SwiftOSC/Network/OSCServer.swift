@@ -89,7 +89,15 @@ public class OSCServer {
                 NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Ready, listening on port \(String(describing: self.listener?.port ?? 0)), delegate: \(String(describing: self.delegate.debugDescription.dropLast(1).dropFirst(9) ))")
             case .failed(let error):
                 NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener failed with \(error)")
-                self.restart()
+                // [48: Address already in use]
+                if case let .posix(errorNumber) = error {
+                    if errorNumber.rawValue == 48 {
+                        print("found error number 48")
+                    }
+                }
+                _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
+                    self.restart()
+                }
             case .cancelled:
                 NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener cancelled")
             default:
