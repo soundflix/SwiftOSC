@@ -17,7 +17,7 @@ public class OSCServer {
     public private(set) var port: NWEndpoint.Port
     public private(set) var name: String?
     public private(set) var domain: String?
-    var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Client", qos: .userInteractive)
+    public var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Client", qos: .userInteractive)
     public var connection: NWConnection?
     
     var bonjour: Bool = false
