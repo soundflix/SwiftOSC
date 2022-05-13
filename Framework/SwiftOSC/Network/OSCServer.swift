@@ -17,7 +17,7 @@ public class OSCServer {
     public private(set) var port: NWEndpoint.Port
     public private(set) var name: String?
     public private(set) var domain: String?
-    public var queue: DispatchQueue
+    var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Client", qos: .userInteractive)
     public var connection: NWConnection?
     
     var bonjour: Bool = false
@@ -31,14 +31,7 @@ public class OSCServer {
             self.name = bonjourName
         }
         
-//        if (1 ... 65535).contains(port) {
-//            self.port = NWEndpoint.Port(rawValue: port)!
-//        } else {
-//            self.port = NWEndpoint.Port.any
-//        }
         self.port = NWEndpoint.Port(rawValue: port) ?? NWEndpoint.Port.any
-        
-        queue = DispatchQueue(label: "SwiftOSC Server") // or .main
         
         setupListener()
     }
@@ -49,9 +42,9 @@ public class OSCServer {
         let udpOption = NWProtocolUDP.Options()
         let params = NWParameters(dtls: nil, udp: udpOption)
         params.allowLocalEndpointReuse = true
-//        params.allowFastOpen = true
         params.serviceClass = .signaling // DEBUG: test if this is really faster than '.best-effort'
-//         if bonjour { params.includePeerToPeer = true }
+        // params.allowFastOpen = true
+        // if bonjour { params.includePeerToPeer = true }
         
         /// create the listener
         do {
@@ -97,7 +90,7 @@ public class OSCServer {
                         print("found error number 48")
                     }
                 }
-                _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
+                _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
                     self.restart()
                 }
             case .cancelled:
@@ -133,13 +126,13 @@ public class OSCServer {
         }
         
         if data[0] == 0x2f { // check if first character is "/"
-            if let message = decodeMessage(data){
+            if let message = decodeMessage(data) {
                 // print(message)
                 self.sendToDelegate(message)
             }
             
         } else if data.count > 8 { /// make sure we have at least 8 bytes before checking if a bundle.
-            if "#bundle\0".toData() == data.subdata(in: Range(0...7)){//matches string #bundle
+            if "#bundle\0".toData() == data.subdata(in: Range(0...7)) { // matches string #bundle
                 if let bundle = decodeBundle(data){
                     self.sendToDelegate(bundle)
                 }
@@ -286,6 +279,7 @@ public class OSCServer {
                         }
                     })
                 }
+                
             }
         }
     }
