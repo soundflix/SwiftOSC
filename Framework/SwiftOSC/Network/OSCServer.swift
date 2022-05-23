@@ -48,8 +48,7 @@ public class OSCServer {
         
         /// create the listener
         do {
-            //listener = try NWListener(using: params, on: port)
-            listener = try NWListener(using: params)
+            listener = try NWListener(using: params, on: port)
         } catch let error {
             NSLog("SwiftOSC Server failed to create listener: \(error)")
         }
