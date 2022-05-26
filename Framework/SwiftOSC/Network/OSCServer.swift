@@ -49,6 +49,7 @@ public class OSCServer {
         
         self.port = NWEndpoint.Port(rawValue: port) ?? NWEndpoint.Port.any
         
+        serviceOn = true
         setupListener()
     }
     
@@ -75,7 +76,6 @@ public class OSCServer {
 //                                                   type: "_osc._udp",
 //                                                   domain: domain)
 //        }
-        serviceOn = true
         listener?.service = service
         
         /// handle incoming connections server will only connect to the latest connection
