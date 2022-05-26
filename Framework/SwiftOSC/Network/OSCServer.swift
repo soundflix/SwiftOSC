@@ -22,20 +22,22 @@ public class OSCServer {
     
 //    var bonjour: Bool = false
     
-    var service: NWListener.Service? = nil
-//    var serviceOn = true
-//    {
-//        didSet {
-//            if serviceOn {
-//                service = NWListener.Service(name: name,
-//                                                                    type: "_osc._udp",
-//                                                                    domain: domain)
-//            } else {
-//                service = nil
-//            }
-//            print("OSC Service \(serviceOn ? "-ON-" : "xOFFx")")
-//        }
-//    }
+    var service: NWListener.Service? = NWListener.Service(name: name,
+                                                          type: "_osc._udp",
+                                                          domain: domain)
+    var serviceOn = true
+    {
+        didSet {
+            if serviceOn {
+                service = NWListener.Service(name: name,
+                                             type: "_osc._udp",
+                                             domain: domain)
+            } else {
+                service = nil
+            }
+            print("OSC Service \(serviceOn ? "-ON-" : "xOFFx")")
+        }
+    }
     
     public init?(port: UInt16, bonjourName: String? = nil, domain: String? = nil) {
         
@@ -71,10 +73,11 @@ public class OSCServer {
         
         /// Bonjour service, always try to publish on first try
 //        if bonjour {
-            listener?.service = NWListener.Service(name: name,
-                                                   type: "_osc._udp",
-                                                   domain: domain)
+//            listener?.service = NWListener.Service(name: name,
+//                                                   type: "_osc._udp",
+//                                                   domain: domain)
 //        }
+        listener?.service = service
         
         /// handle incoming connections server will only connect to the latest connection
         listener?.newConnectionHandler = { [weak self] (newConnection) in
@@ -108,8 +111,10 @@ public class OSCServer {
                         /// try to restart without Bonjour name
                         if self.listener?.service != nil {
                             NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Restarting listener without Bonjour Service")
-                            self.service = nil
+//                            self.service = nil
+                            self.serviceOn = false
                             self.restart()
+                            return
                         }
                         
                     }
