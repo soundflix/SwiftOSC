@@ -22,7 +22,7 @@ public class OSCServer {
     
 //    var bonjour: Bool = false
     
-//    var service: NWListener.Service? = nil
+    var service: NWListener.Service? = nil
 //    var serviceOn = true
 //    {
 //        didSet {
@@ -108,7 +108,7 @@ public class OSCServer {
                         /// try to restart without Bonjour name
                         if self.listener?.service != nil {
                             NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Restarting listener without Bonjour Service")
-                            self.listener?.service = nil
+                            self.service = nil
                             self.restart()
                         }
                         
