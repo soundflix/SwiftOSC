@@ -22,16 +22,14 @@ public class OSCServer {
     
 //    var bonjour: Bool = false
     
-    var service: NWListener.Service? = NWListener.Service(name: name,
-                                                          type: "_osc._udp",
-                                                          domain: domain)
+    var service: NWListener.Service? = nil
     var serviceOn = true
     {
         didSet {
             if serviceOn {
                 service = NWListener.Service(name: name,
                                              type: "_osc._udp",
-                                             domain: domain)
+                                             domain: nil) // always nil?
             } else {
                 service = nil
             }
@@ -77,6 +75,7 @@ public class OSCServer {
 //                                                   type: "_osc._udp",
 //                                                   domain: domain)
 //        }
+        serviceOn = true
         listener?.service = service
         
         /// handle incoming connections server will only connect to the latest connection
