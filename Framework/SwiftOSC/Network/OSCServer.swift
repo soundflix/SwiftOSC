@@ -20,16 +20,32 @@ public class OSCServer {
     public var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Client", qos: .userInteractive)
     public var connection: NWConnection?
     
-    var bonjour: Bool = false
+//    var bonjour: Bool = false
+    
+//    var service: NWListener.Service? = nil
+//    var serviceOn = true
+//    {
+//        didSet {
+//            if serviceOn {
+//                service = NWListener.Service(name: name,
+//                                                                    type: "_osc._udp",
+//                                                                    domain: domain)
+//            } else {
+//                service = nil
+//            }
+//            print("OSC Service \(serviceOn ? "-ON-" : "xOFFx")")
+//        }
+//    }
     
     public init?(port: UInt16, bonjourName: String? = nil, domain: String? = nil) {
         
         self.domain = domain
                 
-        if let bonjourName = bonjourName {
-            bonjour = true
-            self.name = bonjourName
-        }
+//        if let bonjourName = bonjourName {
+//            bonjour = true
+//            self.name = bonjourName
+//        }
+        self.name = bonjourName
         
         self.port = NWEndpoint.Port(rawValue: port) ?? NWEndpoint.Port.any
         
@@ -38,7 +54,7 @@ public class OSCServer {
     
     func setupListener() {
         
-        /// advertise Bonjour
+        /// listener parameters
         let udpOption = NWProtocolUDP.Options()
         let params = NWParameters(dtls: nil, udp: udpOption)
         params.allowLocalEndpointReuse = true
@@ -53,12 +69,12 @@ public class OSCServer {
             NSLog("SwiftOSC Server failed to create listener: \(error)")
         }
         
-        /// Bonjour service
-        if bonjour {
+        /// Bonjour service, always try to publish on first try
+//        if bonjour {
             listener?.service = NWListener.Service(name: name,
                                                    type: "_osc._udp",
                                                    domain: domain)
-        }
+//        }
         
         /// handle incoming connections server will only connect to the latest connection
         listener?.newConnectionHandler = { [weak self] (newConnection) in
@@ -87,7 +103,15 @@ public class OSCServer {
                 // [48: Address already in use]
                 if case let .posix(errorNumber) = error {
                     if errorNumber.rawValue == 48 {
-                        print("found error number 48")
+//                        print("found error number 48: 'Address already in use'")
+                        
+                        /// try to restart without Bonjour name
+                        if self.listener?.service != nil {
+                            NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Restarting listener without Bonjour Service")
+                            self.listener?.service = nil
+                            self.restart()
+                        }
+                        
                     }
                 }
                 _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
@@ -292,11 +316,9 @@ public class OSCServer {
         // listener = nil
     }
     
-    /// cancel conection and listener, then start with refreshed settings
+    /// setup new listener
     public func restart() {
         stop()
-        
-        /// setup new listener
         setupListener()
     }
 }
