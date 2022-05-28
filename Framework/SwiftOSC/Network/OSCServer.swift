@@ -91,7 +91,7 @@ public class OSCServer {
                     NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Connection ready *")
                     if self.hideService {
                         self.listener?.service = nil
-                        NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Hiding service ...")
+                        NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Hiding service ...\(self.listener?.service.debugDescription)")
                     }
                 @unknown default:
                     NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': NWConnection unknown case")
