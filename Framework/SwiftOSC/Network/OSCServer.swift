@@ -73,7 +73,6 @@ public class OSCServer {
             }
             
             self.connection = newConnection
-            self.connection?.start(queue: (self.queue))
             
             self.connection?.stateUpdateHandler = { [weak self] newState in
                 guard let self = self else { print("SwiftOSC Server C stateUpdateHandler error"); return }
@@ -100,6 +99,7 @@ public class OSCServer {
                 }
             }
             
+            self.connection?.start(queue: (self.queue))
             self.receive()
         }
                 
