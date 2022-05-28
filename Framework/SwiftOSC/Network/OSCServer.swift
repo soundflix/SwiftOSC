@@ -20,31 +20,28 @@ public class OSCServer {
     public var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Client", qos: .userInteractive)
     public var connection: NWConnection?
     
-    var bonjour: Bool = false
-    
+    // TODO: why does init have to be failing?
     public init?(port: UInt16, bonjourName: String? = nil, domain: String? = nil) {
         
         self.domain = domain
                 
         if let bonjourName = bonjourName {
-            bonjour = true
             self.name = bonjourName
         }
         
-        self.port = NWEndpoint.Port(rawValue: port) ?? NWEndpoint.Port.any
+//        self.port = NWEndpoint.Port(rawValue: port) ?? NWEndpoint.Port.any
+        self.port = NWEndpoint.Port(integerLiteral: port)
         
         setupListener()
     }
     
     func setupListener() {
         
-        /// advertise Bonjour
+        /// listener parameters
         let udpOption = NWProtocolUDP.Options()
         let params = NWParameters(dtls: nil, udp: udpOption)
         params.allowLocalEndpointReuse = true
-        params.serviceClass = .signaling // DEBUG: test if this is really faster than '.best-effort'
-        // params.allowFastOpen = true
-        // if bonjour { params.includePeerToPeer = true }
+        params.serviceClass = .signaling // TODO: compare to standard '.best-effort', faster communication?
         
         /// create the listener
         do {
@@ -54,7 +51,7 @@ public class OSCServer {
         }
         
         /// Bonjour service
-        if bonjour {
+        if self.name != nil {
             listener?.service = NWListener.Service(name: name,
                                                    type: "_osc._udp",
                                                    domain: domain)
@@ -83,13 +80,15 @@ public class OSCServer {
             case .ready:
                 NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Ready, listening on port \(String(describing: self.listener?.port ?? 0)), delegate: \(String(describing: self.delegate.debugDescription.dropLast(1).dropFirst(9) ))")
             case .failed(let error):
-                NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener failed with \(error)")
+                // there are .dns() and .tls() cases, too
                 // [48: Address already in use]
                 if case let .posix(errorNumber) = error {
-                    if errorNumber.rawValue == 48 {
-                        print("found error number 48")
-                    }
+                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener failed with \(errorNumber): \(error)")
+                } else {
+                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener failed with \(error)")
                 }
+                /// wait a little for restart to reduce load
+                // TODO: store timer and cancel on next call!
                 _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
                     self.restart()
                 }

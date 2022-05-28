@@ -33,7 +33,8 @@ public class OSCClient {
         }
         self.host = NWEndpoint.Host(safeHost)
 
-        self.port = NWEndpoint.Port(rawValue: port) ?? NWEndpoint.Port.any
+//        self.port = NWEndpoint.Port(rawValue: port) ?? NWEndpoint.Port.any
+        self.port = NWEndpoint.Port(integerLiteral: port)
 
         setupConnection()
     }
