@@ -21,6 +21,7 @@ public class OSCServer {
     public var connection: NWConnection?
     
     var bonjour: Bool = false
+    public var hideService = true
     
     public init?(port: UInt16, bonjourName: String? = nil, domain: String? = nil) {
         
@@ -73,12 +74,38 @@ public class OSCServer {
             
             self.connection = newConnection
             self.connection?.start(queue: (self.queue))
+            
+            self.connection?.stateUpdateHandler = { [weak self] newState in
+                guard let self = self else { print("SwiftOSC Server C stateUpdateHandler error"); return }
+                switch newState {
+                case .preparing:
+                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Connection preparing")
+                case .setup:
+                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Connection setup")
+                case .waiting(let error):
+                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Connection waiting with \(error)")
+                case .cancelled:
+                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Connection cancelled")
+                case .failed(let error):
+                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Connection failed with \(error)")
+                case .ready:
+                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Connection ready *")
+                    if self.hideService {
+                        self.listener?.service = nil
+                        NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Hiding service ...")
+                    }
+                @unknown default:
+                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': NWConnection unknown case")
+                    fatalError()
+                }
+            }
+            
             self.receive()
         }
                 
         /// Handle listener state changes
         listener?.stateUpdateHandler = { [weak self] (newState) in
-            guard let self = self else { print("SwiftOSC Server stateUpdateHandler error"); return }
+            guard let self = self else { print("SwiftOSC Server Listener stateUpdateHandler error"); return }
             switch newState {
             case .ready:
                 NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Ready, listening on port \(String(describing: self.listener?.port ?? 0)), delegate: \(String(describing: self.delegate.debugDescription.dropLast(1).dropFirst(9) ))")
@@ -86,9 +113,9 @@ public class OSCServer {
                 NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener failed with \(error)")
                 // [48: Address already in use]
                 if case let .posix(errorNumber) = error {
-                    if errorNumber.rawValue == 48 {
-                        print("found error number 48")
-                    }
+//                    if errorNumber.rawValue == 48 {
+//                        print("found error number 48")
+//                    }
                 }
                 _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
                     self.restart()
