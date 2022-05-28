@@ -55,6 +55,7 @@ public class OSCServer {
             listener?.service = NWListener.Service(name: name,
                                                    type: "_osc._udp",
                                                    domain: domain)
+//            listener?.service?.noAutoRename
         }
         
         /// handle incoming connections server will only connect to the latest connection
