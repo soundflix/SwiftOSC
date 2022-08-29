@@ -190,18 +190,16 @@ public class OSCServer {
                 /// extract types
                 messageData = messageData.subdata(in: (addressEnd/4+1)*4..<messageData.count)
                 
-                // TotalMix Bulk data crash
+                // let typeEnd = messageData.firstIndex(of: 0x00)!
+                // TotalMix Bundle data crash
                 // ERROR Thread 10: Fatal error: Unexpectedly found nil while unwrapping an Optional value
-//                let typeEnd = messageData.firstIndex(of: 0x00)!
+                
                 guard let typeEnd = messageData.firstIndex(of: 0x00) else {
-                    func buildCustomMessage() -> OSCMessage {
-                        let customMessage: OSCMessage = OSCMessage(OSCAddressPattern("/OSCError")!)
-                        customMessage.add(String("SwiftOSCServer \(name ?? String(describing: self.listener?.port)) OSC exception_ *** dirty fix 'type end found nil' *** (TotalMix bundle data with missing type end)"))
-                        return customMessage
-                     }
-                    let customMessage = buildCustomMessage()
-                    NSLog("SwiftOSCServer exception_ *** dirty fix 'type end found nil' ***")
-                    return customMessage }
+//                    print("SwiftOSCServer: debug messageData: \(messageData) \(message)")
+                    NSLog("SwiftOSCServer: Invalid OSCMessage: Missing type terminator. Declaring as Impulse.")
+                    message.add(OSCImpulse())
+                    return message
+                }
                 let type = messageData.subdata(in: 1..<typeEnd).toString()
                 
                 messageData = messageData.subdata(in: (typeEnd/4+1)*4..<messageData.count)
