@@ -17,13 +17,17 @@ extension Float: OSCType {
     public var oscData: Data {
         get {
             var float = CFConvertFloat32HostToSwapped(Float32(self))
-            let buffer = UnsafeBufferPointer(start: &float, count: 1)
+            let buffer = withUnsafePointer(to: &float) {
+                UnsafeBufferPointer(start: $0, count: 1)
+            }
             return Data(buffer: buffer)
         }
     }
     init(_ data:Data){
         var float = CFConvertFloat32HostToSwapped(Float())
-        let buffer = UnsafeMutableBufferPointer(start: &float, count: 1)
+        let buffer = withUnsafeMutablePointer(to: &float) {
+            UnsafeMutableBufferPointer(start: $0, count: 1)
+        }
         _ = data.copyBytes(to: buffer)
         self = Float(CFConvertFloat32SwappedToHost(float))
     }
@@ -39,7 +43,9 @@ extension Double: OSCType {
     public var oscData: Data {
         get {
             var float = CFConvertFloat32HostToSwapped(Float32(self))
-            let buffer = UnsafeBufferPointer(start: &float, count: 1)
+            let buffer = withUnsafePointer(to: &float) {
+                UnsafeBufferPointer(start: $0, count: 1)
+            }
             return Data(buffer: buffer)
         }
     }

@@ -11,7 +11,9 @@ import Foundation
 extension Data {
     func toInt32() -> Int32 {
         var int = Int32()
-        let buffer = UnsafeMutableBufferPointer(start: &int, count: 1)
+        let buffer = withUnsafeMutablePointer(to: &int) {
+            UnsafeMutableBufferPointer(start: $0, count: 1)
+        }
         _ = self.copyBytes(to: buffer)
         
         return int.byteSwapped

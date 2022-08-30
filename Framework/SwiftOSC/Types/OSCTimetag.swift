@@ -19,7 +19,9 @@ extension OSCTimetag: OSCType {
     public var oscData: Data {
         get {
             var int = self.bigEndian
-            let buffer = UnsafeBufferPointer(start: &int, count: 1)
+            let buffer = withUnsafePointer(to: &int) {
+                UnsafeBufferPointer(start: $0, count: 1)
+            }
             return Data(buffer: buffer)
         }
     }
@@ -46,7 +48,9 @@ extension OSCTimetag: OSCType {
     }
     init(_ data: Data){
         var int = UInt64()
-        let buffer = UnsafeMutableBufferPointer(start: &int, count: 1)
+        let buffer = withUnsafeMutablePointer(to: &int) {
+            UnsafeMutableBufferPointer(start: $0, count: 1)
+        }
         _ = data.copyBytes(to: buffer)
         
         self =  int.byteSwapped

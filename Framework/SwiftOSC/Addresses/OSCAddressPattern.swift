@@ -158,7 +158,7 @@ public struct OSCAddressPattern {
         regex = String(regex.dropFirst())
         regex = String(regex.dropFirst())
 
-        var components = regex.components(separatedBy: "/")
+        let components = regex.components(separatedBy: "/")
         var regexContainer = "^/$|"
 
         for x in 0 ..< components.count {

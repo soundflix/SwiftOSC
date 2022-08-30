@@ -11,7 +11,9 @@ import Foundation
 extension Int32 {
     func toData() -> Data {
         var int = self.bigEndian
-        let buffer = UnsafeBufferPointer(start: &int, count: 1)
+        let buffer = withUnsafePointer(to: &int) {
+            UnsafeBufferPointer(start: $0, count: 1)
+        }
         return Data(buffer: buffer)
     }
 }
@@ -19,7 +21,9 @@ extension Int32 {
 extension UInt32 {
     func toData() -> Data {
         var int = self.bigEndian
-        let buffer = UnsafeBufferPointer(start: &int, count: 1)
+        let buffer = withUnsafePointer(to: &int) {
+            UnsafeBufferPointer(start: $0, count: 1)
+        }
         return Data(buffer: buffer)
     }
 }
@@ -27,7 +31,9 @@ extension UInt32 {
 extension Int64 {
     func toData() -> Data {
         var int = self.bigEndian
-        let buffer = UnsafeBufferPointer(start: &int, count: 1)
+        let buffer = withUnsafePointer(to: &int) {
+            UnsafeBufferPointer(start: $0, count: 1)
+        }
         return Data(buffer: buffer)
     }
 }
