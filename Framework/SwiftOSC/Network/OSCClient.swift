@@ -9,6 +9,7 @@
 import Foundation
 import Network
 
+@available(OSX 10.15, *)
 public class OSCClient {
 
     public var connection: NWConnection?
