@@ -26,7 +26,7 @@ class ViewController: NSViewController, NSTableViewDataSource, OSCDelegate {
         // Do any additional setup after loading the view.
         let defaultPort = defaults.integer(forKey: "Port")
         if defaultPort != 0 {
-            server = OSCServer(port: defaultPort)
+            server = OSCServer(port: UInt16(defaultPort))
             self.port.stringValue = String(defaultPort)
         } else {
             server = OSCServer(port: 8080)
@@ -73,7 +73,7 @@ class ViewController: NSViewController, NSTableViewDataSource, OSCDelegate {
     }
     @IBAction func changePort(_ sender: NSTextField) {
         if sender.integerValue != defaults.integer(forKey: "Port") {
-            server = OSCServer(port: sender.integerValue)
+            server = OSCServer(port: UInt16(sender.integerValue))
             defaults.set(sender.integerValue, forKey: "Port")
         }
     }
