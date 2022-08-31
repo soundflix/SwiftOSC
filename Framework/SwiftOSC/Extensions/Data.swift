@@ -21,7 +21,8 @@ extension Data {
 }
 
 extension Data {
-    func toString()->String{
+    // TODO: Another risky force unwrap
+    func toString() -> String {
         return String(data: self, encoding: String.Encoding.utf8)!
     }
 }
@@ -34,5 +35,16 @@ extension Data {
             string += hex
         }
         print(string)
+    }
+}
+
+extension Data {
+    /// Returns base 32 null terminated data
+    mutating func base32NullTerminated() -> Data {
+        for _ in 1...4-self.count%4 {
+            var null = UInt8(0)
+            self.append(&null, count: 1)
+        }
+        return self
     }
 }

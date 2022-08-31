@@ -16,15 +16,20 @@ extension String: OSCType {
     }
     public var oscData: Data {
         get {
+//            TODO: Remove force unwrap, needs testing!
             var data = self.data(using: String.Encoding.utf8)!
             
-            //base 32 null terminated data
-            for _ in 1...4-data.count%4 {
-                var null = UInt8(0)
-                data.append(&null, count: 1)
-            }
+            return data.base32NullTerminated()
             
-            return data
+            // proposal:
+//            if var data = self.data(using: String.Encoding.utf8) {
+//                return data.base32NullTerminated()
+//            }
+//            if var data = self.data(using: String.Encoding.windowsCP1252) {
+//                return data.base32NullTerminated()
+//            }
+            /// if all else fails, return empty data
+//            return Data()
         }
     }
     init(_ data:Data){
@@ -38,7 +43,7 @@ extension String: OSCType {
             return
         }
         
-        print("SwiftOSC StringDataError: \(String(describing: data))")
+        NSLog("SwiftOSC StringDataError: Unknown encoding in: \(String(describing: data))")
         self = "<OSCStringDataError>"
             
         // self = String(data: data, encoding: String.Encoding.utf8)! // was crashing on german umlaut characters
