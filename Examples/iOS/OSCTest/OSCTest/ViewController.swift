@@ -60,12 +60,10 @@ class ViewController: UIViewController, OSCDelegate, UITextFieldDelegate {
     @IBAction func changeClientHost(_ sender: UITextField) {
         if let host = sender.text{
             if host != clientHost {
-                if let oscClient = OSCClient(host: host, port: clientPort) {
-                    client = oscClient
-                    clientHost = host
-                    defaults.set(clientHost, forKey: "clientHost")
-                    clientHostTextField.text = clientHost
-                }
+                clientHost = host
+                client = OSCClient(host: clientHost, port: UInt16(clientPort))
+                defaults.set(clientHost, forKey: "clientHost")
+                clientHostTextField.text = clientHost
             }
         }
         clientHostTextField.text = clientHost
@@ -73,14 +71,12 @@ class ViewController: UIViewController, OSCDelegate, UITextFieldDelegate {
     
     @IBAction func changeClientPort(_ sender: UITextField) {
         if let text = sender.text {
-            if let port = Int(text) { // if integer
+            if let port = UInt16(text) { // if integer
                 if port != clientPort {
-                    if let oscClient = OSCClient(host: clientHost, port: port) {
-                        client = oscClient
-                        clientPort = port
-                        defaults.set(clientPort, forKey: "clientPort")
-                        clientPortTextField.text = String(clientPort)
-                    }
+                    clientPort = Int(port)
+                    client = OSCClient(host: clientHost, port: UInt16(clientPort))
+                    defaults.set(clientPort, forKey: "clientPort")
+                    clientPortTextField.text = String(clientPort)
                 }
             }
         }
@@ -89,11 +85,11 @@ class ViewController: UIViewController, OSCDelegate, UITextFieldDelegate {
     
     @IBAction func changeServerPort(_ sender: UITextField) {
         if let text = sender.text {
-            if let port = Int(text) { // if integer
+            if let port = UInt16(text) { // if integer
                 if port != serverPort { // if different port
-                    if let oscServer = OSCServer(port: port) {
+                    if let oscServer = OSCServer(port: UInt16(port)) {
                         server = oscServer
-                        serverPort = port
+                        serverPort = Int(port)
                         defaults.set(serverPort, forKey: "serverPort")
                         serverPortTextField.text = String(serverPort)
                     }

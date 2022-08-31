@@ -49,8 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         // setup osc client and server
-        client = OSCClient(host: clientHost, port: clientPort)
-        server = OSCServer(port: serverPort)
+        client = OSCClient(host: clientHost, port: UInt16(clientPort))
+        server = OSCServer(port: UInt16(serverPort))
         
         return true
     }
