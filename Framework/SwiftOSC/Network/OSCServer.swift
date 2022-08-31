@@ -65,7 +65,7 @@ public class OSCServer {
             
             /// cancel previous connection // check if it's own port
             if self.connection != nil {
-                NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Cancelling connection: \(String(describing: newConnection))")
+                NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Cancelling connection: \(String(describing: self.connection))")
                 self.connection?.cancel()
             }
             
