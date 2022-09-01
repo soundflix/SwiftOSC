@@ -29,7 +29,6 @@ public class OSCServer {
             self.name = bonjourName
         }
         
-//        self.port = NWEndpoint.Port(rawValue: port) ?? NWEndpoint.Port.any
         self.port = NWEndpoint.Port(integerLiteral: port)
         
         setupListener()
