@@ -48,12 +48,7 @@ public struct OSCAddressPattern {
     internal var data: Data {
         get {
             var data = self.string.data(using: String.Encoding.utf8)!
-            //make sure data is base 32 null terminated
-            var null:UInt8 = 0
-            for _ in 1...4-data.count%4 {
-                data.append(&null, count: 1)
-            }
-            return data
+            return data.base32NullTerminated()
         }
     }
     
@@ -180,24 +175,24 @@ public struct OSCAddressPattern {
     
     // Returns True if the address matches the address pattern.
     public func matches(_ address: OSCAddress)->Bool{
-        var maches = true
+        var matches = true
         autoreleasepool {
             if address.string.range(of: self.regex, options: .regularExpression) == nil {
-                maches = false
+                matches = false
             }
         }
-        return maches
+        return matches
     }
     
     // Returns True if the address is along the path of the address pattern
     public func matches(path: OSCAddress)->Bool{
-        var maches = true
+        var matches = true
         autoreleasepool {
             if path.string.range(of: self.regexPath, options: .regularExpression) == nil {
-                maches = false
+                matches = false
             }
         }
-        return maches
+        return matches
     }
 }
 
