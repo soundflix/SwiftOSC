@@ -27,13 +27,12 @@ public class OSCClient {
 
     public init(host: String, port: UInt16) {
         var safeHost = host
-        /// defaut to localhost (empty string will crash)
         if safeHost == "" {
+            NSLog("Invalid Hostname: Empty string is not allowed. Replacing with '127.0.0.1'")
             safeHost = "127.0.0.1"
         }
         self.host = NWEndpoint.Host(safeHost)
 
-//        self.port = NWEndpoint.Port(rawValue: port) ?? NWEndpoint.Port.any
         self.port = NWEndpoint.Port(integerLiteral: port)
 
         setupConnection()
