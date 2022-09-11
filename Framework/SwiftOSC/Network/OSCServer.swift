@@ -62,6 +62,21 @@ public class OSCServer {
             guard let self = self else { print("SwiftOSC Server newConnectionHandler error"); return }
             NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': New Connection from \(String(describing: newConnection))")
             
+            // TODO: check if new connection port is TotalMix
+            // if endpoint type: case hostPort(host: NWEndpoint.Host, port: NWEndpoint.Port)
+            // query port in Terminal:
+            // lsof -i -P | grep -i "UDP localhost:64194"
+            // check if returns containing "TotalmixF"
+
+            switch newConnection {
+            case .init(host: let newRemoteHost, port: let newRemotePort, using: _):
+                print("newRemoteHost:Port: \(newRemoteHost):\(newRemotePort)")
+            case .init(to: _, using: _):
+                break
+            default:
+                break
+            }
+            
             /// cancel previous connection // check if it's own port
             if self.connection != nil {
                 NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Cancelling connection: \(String(describing: self.connection))")
