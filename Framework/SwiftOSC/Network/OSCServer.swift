@@ -68,14 +68,14 @@ public class OSCServer {
             // lsof -i -P | grep -i "UDP localhost:64194"
             // check if returns containing "TotalmixF"
 
-            switch newConnection {
-            case .init(host: let newRemoteHost, port: let newRemotePort, using: _):
-                print("newRemoteHost:Port: \(newRemoteHost):\(newRemotePort)")
-            case .init(to: _, using: _):
-                break
-            default:
-                break
-            }
+//            switch newConnection {
+//            case .init(host: let newRemoteHost, port: let newRemotePort, using: _):
+//                print("newRemoteHost:Port: \(newRemoteHost):\(newRemotePort)")
+//            case .init(to: _, using: _):
+//                break
+//            default:
+//                break
+//            }
             
             /// cancel previous connection // check if it's own port
             if self.connection != nil {
