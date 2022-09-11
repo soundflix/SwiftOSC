@@ -34,7 +34,7 @@ public class OSCServer {
         setupListener()
     }
     
-    func setupListener() {
+    public func setupListener() {
         
         /// listener parameters
         let udpOption = NWProtocolUDP.Options()
