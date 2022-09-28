@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
     /**
     An OSC Address Pattern is an OSC-string beginning with the character '/' (forward slash).
@@ -58,57 +59,57 @@ public struct OSCAddressPattern {
         // Check if addressPattern is valid. Return nil if not.
         // No empty strings
         if addressPattern == "" {
-            NSLog("\"\(addressPattern)\" is an invalid address: Address is empty.")
+            os_log("\"%{Public}@\" is an invalid address: Address is empty.", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         // Must start with "/"
         if addressPattern.first != "/" {
-            NSLog("\"\(addressPattern)\" is an invalid address. Address must begin with \"/\".")
+            os_log("\"%{Public}@\" is an invalid address: Address must begin with \"/\".", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         // No more than two "/" in a row
         if addressPattern.range(of: "/{3,}", options: .regularExpression) != nil {
-            NSLog("\"\(addressPattern)\" is an invalid address. Address must not contain more than two consecutive \"/\".")
+            os_log("\"%{Public}@\" is an invalid address: Address must not contain more than two consecutive \"/\".", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         // No spaces
         if addressPattern.range(of: "\\s", options: .regularExpression) != nil {
-            NSLog("\"\(addressPattern)\" is an invalid address. Address must not contain spaces.")
+            os_log("\"%{Public}@\" is an invalid address: Address must not contain spaces.", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         // [ must be closed, no invalid characters inside
         if addressPattern.range(of: "\\[(?![^\\[\\{\\},?\\*/]+\\])", options: .regularExpression) != nil {
-            NSLog("\"\(addressPattern)\" is an invalid address. [] must closed and not contain invalid characters.")
+            os_log("\"%{Public}@\" is an invalid address: [] must closed and not contain invalid characters.", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         var open = addressPattern.components(separatedBy: "[").count
         var close = addressPattern.components(separatedBy: "]").count
         
         if open != close {
-            NSLog("\"\(addressPattern)\" is an invalid address. [] must be closed.")
+            os_log("\"%{Public}@\" is an invalid address: [] must be closed.", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         
         // { must be closed, no invalid characters inside
         if addressPattern.range(of: "\\{(?![^\\{\\[\\]?\\*/]+\\})", options: .regularExpression) != nil {
-            NSLog("\"\(addressPattern)\" is an invalid address. {} must not contain invalid characters: \\{(?![^\\{\\[\\]?\\*/]+\\})")
+            os_log("\"%{Public}@\" is an invalid address: {} must not contain invalid characters: \\{(?![^\\{\\[\\]?\\*/]+\\})", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         open = addressPattern.components(separatedBy: "{").count
         close = addressPattern.components(separatedBy: "}").count
         
         if open != close {
-            NSLog("\"\(addressPattern)\" is an invalid address. {} must be closed.")
+            os_log("\"%{Public}@\" is an invalid address: {} must be closed.", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         
         // "," only inside {}
         if addressPattern.range(of: ",(?![^\\{\\[\\]?\\*/]+\\})", options: .regularExpression) != nil {
-            NSLog("\"\(addressPattern)\" is an invalid address. Must only contain \",\" inside {}.")
+            os_log("\"%{Public}@\" is an invalid address: Address is empty.", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         if addressPattern.range(of: ",(?<!\\{[^\\{\\[\\]?\\*/]+)", options: .regularExpression) != nil {
-            NSLog("\"\(addressPattern)\" is an invalid address. Must only contain \",\" inside {}.")
+            os_log("\"%{Public}@\" is an invalid address: Must only contain \",\" inside {}.", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         

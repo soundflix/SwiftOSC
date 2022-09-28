@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
 /**
      **OSC Address Spaces and OSC Addresses**
@@ -60,9 +61,7 @@ public struct OSCAddress {
         
         // Check that address is valid or fail initializer
         if address.range(of: "[\\s\\*,?\\[\\]\\{\\}]|/{2,}|^[^/]|^$", options: .regularExpression) != nil {
-            
-            NSLog("\"\(address)\" is an invalid address. Invalid characters include: (space) ' ' * , ? [ ] { }. Address must start with '/' (forward slash). No consecutive '/' (forward slash). No empty strings")
-            
+            os_log("\"%{Public}@\" is an invalid address. Invalid characters include: (space) ' ' * , ? [ ] { }. Address must start with '/' (forward slash). No consecutive '/' (forward slash). No empty strings allowed.", log: SwiftOSCLog, type: .error, address)
             return nil
         }
         string = address

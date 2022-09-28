@@ -29,6 +29,7 @@
 		034EE05921D6159B00C4DD61 /* OSCBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034EE04321D6159B00C4DD61 /* OSCBundle.swift */; };
 		034EE05A21D6159B00C4DD61 /* OSCAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034EE04521D6159B00C4DD61 /* OSCAddress.swift */; };
 		034EE05B21D6159B00C4DD61 /* OSCAddressPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034EE04621D6159B00C4DD61 /* OSCAddressPattern.swift */; };
+		DC0E478928E4440F00A27541 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0E478828E4440F00A27541 /* Log.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		034EE04321D6159B00C4DD61 /* OSCBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSCBundle.swift; sourceTree = "<group>"; };
 		034EE04521D6159B00C4DD61 /* OSCAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSCAddress.swift; sourceTree = "<group>"; };
 		034EE04621D6159B00C4DD61 /* OSCAddressPattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSCAddressPattern.swift; sourceTree = "<group>"; };
+		DC0E478828E4440F00A27541 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 		034EE02C21D6159B00C4DD61 /* SwiftOSC */ = {
 			isa = PBXGroup;
 			children = (
+				DC0E478728E443FD00A27541 /* Log */,
 				034EE02D21D6159B00C4DD61 /* Types */,
 				034EE03621D6159B00C4DD61 /* Network */,
 				034EE03A21D6159B00C4DD61 /* Extensions */,
@@ -154,6 +157,14 @@
 				034EE04621D6159B00C4DD61 /* OSCAddressPattern.swift */,
 			);
 			path = Addresses;
+			sourceTree = "<group>";
+		};
+		DC0E478728E443FD00A27541 /* Log */ = {
+			isa = PBXGroup;
+			children = (
+				DC0E478828E4440F00A27541 /* Log.swift */,
+			);
+			path = Log;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -242,6 +253,7 @@
 			files = (
 				034EE05021D6159B00C4DD61 /* OSCServer.swift in Sources */,
 				034EE04721D6159B00C4DD61 /* OSCFloat.swift in Sources */,
+				DC0E478928E4440F00A27541 /* Log.swift in Sources */,
 				034EE05921D6159B00C4DD61 /* OSCBundle.swift in Sources */,
 				034EE04E21D6159B00C4DD61 /* OSCBool.swift in Sources */,
 				034EE04821D6159B00C4DD61 /* OSCTimetag.swift in Sources */,

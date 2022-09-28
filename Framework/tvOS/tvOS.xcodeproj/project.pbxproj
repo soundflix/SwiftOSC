@@ -29,6 +29,7 @@
 		034EE08A21D615A100C4DD61 /* OSCAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034EE07521D615A100C4DD61 /* OSCAddress.swift */; };
 		034EE08B21D615A100C4DD61 /* OSCAddressPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034EE07621D615A100C4DD61 /* OSCAddressPattern.swift */; };
 		039A7B8A21D5753200C52251 /* SwiftOSC.h in Headers */ = {isa = PBXBuildFile; fileRef = 039A7B8821D5753200C52251 /* SwiftOSC.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DC2BD7AF28E465A800C84A57 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2BD7AE28E465A800C84A57 /* Log.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		039A7B8521D5753200C52251 /* SwiftOSC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftOSC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		039A7B8821D5753200C52251 /* SwiftOSC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftOSC.h; sourceTree = "<group>"; };
 		039A7B8921D5753200C52251 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DC2BD7AE28E465A800C84A57 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 		034EE05C21D615A100C4DD61 /* SwiftOSC */ = {
 			isa = PBXGroup;
 			children = (
+				DC2BD7AD28E465A800C84A57 /* Log */,
 				034EE05D21D615A100C4DD61 /* Types */,
 				034EE06621D615A100C4DD61 /* Network */,
 				034EE06A21D615A100C4DD61 /* Extensions */,
@@ -156,6 +159,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		DC2BD7AD28E465A800C84A57 /* Log */ = {
+			isa = PBXGroup;
+			children = (
+				DC2BD7AE28E465A800C84A57 /* Log.swift */,
+			);
+			path = Log;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -238,6 +249,7 @@
 			files = (
 				034EE08021D615A100C4DD61 /* OSCServer.swift in Sources */,
 				034EE07721D615A100C4DD61 /* OSCFloat.swift in Sources */,
+				DC2BD7AF28E465A800C84A57 /* Log.swift in Sources */,
 				034EE08921D615A100C4DD61 /* OSCBundle.swift in Sources */,
 				034EE07E21D615A100C4DD61 /* OSCBool.swift in Sources */,
 				034EE07821D615A100C4DD61 /* OSCTimetag.swift in Sources */,

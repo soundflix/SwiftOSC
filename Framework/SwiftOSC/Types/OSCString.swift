@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
 extension String: OSCType {
     public var oscTag: String {
@@ -19,25 +20,28 @@ extension String: OSCType {
             if var data = self.data(using: String.Encoding.utf8) {
                 return data.base32NullTerminated()
             }
-            /// if this fails, try different encoding (for sometimes with TotalMix german umlaut)
+            /// if this fails, try different encoding (fixes german umlaut with RME TotalMix)
             if var data = self.data(using: String.Encoding.windowsCP1252) {
+                os_log("String oscData: Decoder type 'windowsCP1252' was used in in: %{Public}@", log: SwiftOSCLog, type: .info, String(describing: self))
                 return data.base32NullTerminated()
             }
             /// if all else fails, return empty data
+            os_log("Unknown string encoding in data: %{Public}@", log: SwiftOSCLog, type: .error, String(describing: self))
             return Data()
         }
     }
-    init(_ data:Data){
+    init(_ data: Data){
         if let dataString = String(data: data, encoding: String.Encoding.utf8) {
             self = dataString
             return
         }
-        /// if this fails, try different encoding (for sometimes with TotalMix german umlaut)
+        /// if this fails, try different encoding (fixes german umlaut with RME TotalMix)
         if let dataString = String(data: data, encoding: String.Encoding.windowsCP1252) {
             self = dataString
+            os_log("String data: Decoder type 'windowsCP1252' was used in in: %{Public}@", log: SwiftOSCLog, type: .info, String(describing: self))
             return
         }
-        NSLog("SwiftOSC StringDataError: Unknown encoding in: \(String(describing: data))")
-        self = "<OSCString:DataDecodingError>"
+        os_log("Unknown string encoding in data: %{Public}@", log: SwiftOSCLog, type: .error, String(describing: data))
+        self = "<Error:UnknownDataEncoding>"
     }
 }

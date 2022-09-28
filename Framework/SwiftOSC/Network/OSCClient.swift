@@ -8,6 +8,7 @@
 
 import Foundation
 import Network
+import OSLog
 
 public class OSCClient {
 
@@ -28,7 +29,7 @@ public class OSCClient {
     public init(host: String, port: UInt16) {
         var safeHost = host
         if safeHost == "" {
-            NSLog("Invalid Hostname: Empty string is not allowed. Replacing with '127.0.0.1'")
+            os_log("Invalid Hostname: Can not use empty string. Replacing with '127.0.0.1'", log: SwiftOSCLog, type: .error)
             safeHost = "127.0.0.1"
         }
         self.host = NWEndpoint.Host(safeHost)
@@ -60,21 +61,25 @@ public class OSCClient {
     func stateUpdateHandler(newState: NWConnection.State) {
         switch newState {
         case .ready:
-            NSLog("SwiftOSC Client is ready. \(String(describing: self.connection))")
+            guard let connection = self.connection else {
+                os_log("Client: Error: Client ready but NIL connection.", log: SwiftOSCLog, type: .error)
+                return
+            }
+            os_log("Client is ready: %{Public}@", log: SwiftOSCLog, type: .default, String(describing: connection))
         case .failed(let error):
-            NSLog("SwiftOSC Client failed with error \(error)")
-            NSLog("SWiftOSC Client is restarting.")
+            os_log("Client failed with error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
+            os_log("Send Client is restarting.", log: SwiftOSCLog, type: .info)
             self.setupConnection()
         case .cancelled:
-            NSLog("SWiftOSC Client cancelled.")
+            os_log("Client cancelled.", log: SwiftOSCLog, type: .info)
             break
         case .waiting(let error):
-            NSLog("SwiftOSC Client waiting with error \(error)")
+            os_log("Client waiting with error : %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
         case .preparing:
-            NSLog("SWiftOSC Client is preparing.")
+            os_log("Client is preparing.", log: SwiftOSCLog, type: .info)
             break
         case .setup:
-            NSLog("SWiftOSC Client is setting up.")
+            os_log("Client is setting up.", log: SwiftOSCLog, type: .info)
             break
         @unknown default:
         fatalError()
@@ -83,18 +88,18 @@ public class OSCClient {
     
     public func startBrowsing() {
       // TODO
-        print("NWBrowser not yet implemented")
+        os_log("NWBrowser not yet implemented", log: SwiftOSCLog, type: .error)
     }
 
     public func send(_ element: OSCElement){
-
         let data = element.oscData
         connection?.send(content: data, completion: .contentProcessed({ (error) in
             if let error = error {
-                NSLog("Send error: \(error)")
+                os_log("Send error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
             }
         }))
     }
+    
     public func restart() {
 //        connection?.forceCancel()
         connection?.cancel()

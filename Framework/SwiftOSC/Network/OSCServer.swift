@@ -8,6 +8,7 @@
 
 import Foundation
 import Network
+import OSLog
 
 public class OSCServer {
     
@@ -46,7 +47,7 @@ public class OSCServer {
         do {
             listener = try NWListener(using: params, on: port)
         } catch let error {
-            NSLog("SwiftOSC Server failed to create listener: \(error)")
+            os_log("Server failed to create listener: %{Public}@", log: SwiftOSCLog, type: .error, String(describing: error))
         }
         
         /// Bonjour service
@@ -59,9 +60,9 @@ public class OSCServer {
         
         /// handle incoming connections server will only connect to the latest connection
         listener?.newConnectionHandler = { [weak self] (newConnection) in
-            guard let self = self else { print("SwiftOSC Server newConnectionHandler error"); return }
-            NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': New Connection from \(String(describing: newConnection))")
-            
+            guard let self = self else { os_log("SwiftOSC Server newConnectionHandler: Error", log: SwiftOSCLog, type: .error); return }
+            os_log("Server '%{Public}@': New connection %{Public}@", log: SwiftOSCLog, type: .info, self.name ?? "<noName>", String(describing: newConnection))
+
             // TODO: check if new connection port is TotalMix
             // if endpoint type: case hostPort(host: NWEndpoint.Host, port: NWEndpoint.Port)
             // query port in Terminal:
@@ -79,10 +80,12 @@ public class OSCServer {
             
             /// cancel previous connection // check if it's own port
             if self.connection != nil {
-                NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Cancelling connection: \(String(describing: self.connection))")
+                guard let connection = self.connection else { os_log("Server: Can not cancel NIL connection.", log: SwiftOSCLog, type: .error); return }
+                os_log("Server '%{Public}@': Cancelling connection %{Public}@", log: SwiftOSCLog, type: .info, self.name ?? "<noName>", String(describing: connection))
                 self.connection?.cancel()
             }
             
+            /// start new connection
             self.connection = newConnection
             self.connection?.start(queue: (self.queue))
             self.receive()
@@ -90,25 +93,25 @@ public class OSCServer {
                 
         /// Handle listener state changes
         listener?.stateUpdateHandler = { [weak self] (newState) in
-            guard let self = self else { print("SwiftOSC Server stateUpdateHandler error"); return }
+            guard let self = self else { os_log("Server stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error); return }
             switch newState {
             case .ready:
-                NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Ready, listening on port \(String(describing: self.listener?.port ?? 0)), delegate: \(String(describing: self.delegate.debugDescription.dropLast(1).dropFirst(9) ))")
+                os_log("Server '%{Public}@': Ready, listening on port %{Public}@, delegate: %{Public}@", log: SwiftOSCLog, type: .default, self.name ?? "<noName>", String(describing: self.listener?.port ?? 0), String(describing: self.delegate))
             case .failed(let error):
                 // there are .dns() and .tls() cases, too
                 // [48: Address already in use]
                 if case let .posix(errorNumber) = error {
-                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener failed with \(errorNumber): \(error)")
+                    os_log("Server '%{Public}@': Listener failed with: %{Public}@: %{Public}@", log: SwiftOSCLog, type: .error, self.name ?? "<noName>", String(describing: errorNumber), String(describing: error))
                 } else {
-                    NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener failed with \(error)")
+                    os_log("Server '%{Public}@' failed to create listener: %{Public}@", log: SwiftOSCLog, type: .error, self.name ?? "<noName>", String(describing: error))
                 }
-                /// wait a little for restart to reduce load
+                /// wait a little with restart to reduce load
                 // TODO: store timer and cancel on next call!
                 _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
                     self.restart()
                 }
             case .cancelled:
-                NSLog("SwiftOSC Server '\(self.name ?? "<noName>")': Listener cancelled")
+                os_log("Server '%{Public}@': Listener cancelled.", log: SwiftOSCLog, type: .info, self.name ?? "<noName>")
             default:
                 break
             }
@@ -152,7 +155,7 @@ public class OSCServer {
                 }
             }
         } else {
-            NSLog("Invalid OSCPacket: data must begin with #bundle\\0 or /")
+            os_log("Invalid OSCPacket: data must begin with #bundle\\0 or /", log: SwiftOSCLog, type: .error)
         }
     }
     
@@ -183,7 +186,7 @@ public class OSCServer {
                     return nil
                 }
 //            } else {
-//                NSLog("Invalid OSCBundle: Bundle data must begin with #bundle\\0 or /.")
+//            os_log("Invalid OSCPacket: data must begin with #bundle\\0 or /", log: SwiftOSCLog, type: .error)
 //                return nil
 //            }
         }
@@ -206,7 +209,7 @@ public class OSCServer {
                 
                 /// message may not contain arguments
                 guard let typeEnd = messageData.firstIndex(of: 0x00) else {
-                    NSLog("SwiftOSCServer: Invalid OSCMessage: Missing type terminator.")
+                    os_log("Server: Invalid OSCMessage: Missing type terminator. Address: %{Public}@", log: SwiftOSCLog, type: .error, message.address.string)
                     return message
                 }
                 let type = messageData.subdata(in: 1..<typeEnd).toString()
@@ -233,7 +236,6 @@ public class OSCServer {
                             length += 1
                         }
                         messageData = messageData.subdata(in: length..<messageData.count)
-                        
                     case "T": /// true
                         message.add(true)
                     case "F": /// false
@@ -246,17 +248,17 @@ public class OSCServer {
                         message.add(OSCTimetag(messageData.subdata(in: Range(0...7))))
                         messageData = messageData.subdata(in: 8..<messageData.count)
                     default:
-                        NSLog("Invalid OSCMessage: Unknown OSC type.")
+                        os_log("Invalid OSCMessage: Unknown OSC type.", log: SwiftOSCLog, type: .error)
                         return nil
                     }
                 }
             } else {
-                NSLog("Invalid OSCMessage: Invalid address.")
+                os_log("Invalid OSCMessage: Invalid address.", log: SwiftOSCLog, type: .error)
                 return nil
             }
             return message
         } else {
-            NSLog("Invalid OSCMessage: Missing address terminator.")
+            os_log("Invalid OSCMessage: Missing address terminator", log: SwiftOSCLog, type: .error)
             return nil
         }
     }
@@ -286,7 +288,6 @@ public class OSCServer {
                         }
                     })
                 }
-                
             }
         }
     }
