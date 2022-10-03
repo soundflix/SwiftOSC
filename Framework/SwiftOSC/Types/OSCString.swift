@@ -22,7 +22,7 @@ extension String: OSCType {
             }
             /// if this fails, try different encoding (fixes german umlaut with RME TotalMix)
             if var data = self.data(using: String.Encoding.windowsCP1252) {
-                os_log("String oscData: Decoder type 'windowsCP1252' was used in in: %{Public}@", log: SwiftOSCLog, type: .info, String(describing: self))
+                os_log("String oscData: Decoder type 'windowsCP1252' was used in: %{Public}@", log: SwiftOSCLog, type: .info, String(describing: self))
                 return data.base32NullTerminated()
             }
             /// if all else fails, return empty data
@@ -38,7 +38,7 @@ extension String: OSCType {
         /// if this fails, try different encoding (fixes german umlaut with RME TotalMix)
         if let dataString = String(data: data, encoding: String.Encoding.windowsCP1252) {
             self = dataString
-            os_log("String data: Decoder type 'windowsCP1252' was used in in: %{Public}@", log: SwiftOSCLog, type: .info, String(describing: self))
+            os_log("String data: Decoder type 'windowsCP1252' was used in: %{Public}@", log: SwiftOSCLog, type: .info, String(describing: self))
             return
         }
         os_log("Unknown string encoding in data: %{Public}@", log: SwiftOSCLog, type: .error, String(describing: data))
