@@ -26,17 +26,14 @@ class ViewController: NSViewController, NSTableViewDataSource, OSCDelegate {
         // Do any additional setup after loading the view.
         let defaultPort = defaults.integer(forKey: "Port")
         if defaultPort != 0 {
-            server = OSCServer(port: UInt16(defaultPort))
+            server = OSCServer(port: UInt16(defaultPort), delegate: self)
             self.port.stringValue = String(defaultPort)
         } else {
-            server = OSCServer(port: 8080)
+            server = OSCServer(port: 8080, delegate: self)
             self.port.stringValue = String(8080)
         }
         
-        //setup to receive data from server
-        server?.delegate = self
         tableView.dataSource = self
-        
     }
 
     override var representedObject: Any? {
@@ -45,7 +42,7 @@ class ViewController: NSViewController, NSTableViewDataSource, OSCDelegate {
         }
     }
 
-    //add osc data from notification
+    // Receive OSC data with delegate method
     func didReceive(_ message: OSCMessage) {
         let tableData = TableData(Date(), message)
         self.tableData.append(tableData)
@@ -73,7 +70,7 @@ class ViewController: NSViewController, NSTableViewDataSource, OSCDelegate {
     }
     @IBAction func changePort(_ sender: NSTextField) {
         if sender.integerValue != defaults.integer(forKey: "Port") {
-            server = OSCServer(port: UInt16(sender.integerValue))
+            server = OSCServer(port: UInt16(sender.integerValue), delegate: self)
             defaults.set(sender.integerValue, forKey: "Port")
         }
     }

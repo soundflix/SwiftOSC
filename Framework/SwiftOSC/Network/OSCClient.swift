@@ -13,8 +13,8 @@ import OSLog
 public class OSCClient {
 
     public var connection: NWConnection?
-    var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Client", qos: .userInteractive)
-    public var serviceType: String? = "_osc._udp"
+    public private(set) var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Client", qos: .userInteractive)
+    public private(set) var serviceType: String? = "_osc._udp"
     public var browser: NWBrowser?
 
     public private(set) var host: NWEndpoint.Host?
@@ -28,9 +28,9 @@ public class OSCClient {
 
     public init(host: String, port: UInt16) {
         var safeHost = host
-        if safeHost == "" {
-            os_log("Invalid Hostname: Can not use empty string. Replacing with '127.0.0.1'", log: SwiftOSCLog, type: .error)
-            safeHost = "127.0.0.1"
+        if safeHost.isEmpty {
+            os_log("Invalid Hostname: Can not use empty string. Replacing with 'localhost'", log: SwiftOSCLog, type: .error)
+            safeHost = "localhost"
         }
         self.host = NWEndpoint.Host(safeHost)
 
