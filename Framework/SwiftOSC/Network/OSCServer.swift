@@ -18,14 +18,15 @@ public class OSCServer {
     public private(set) var port: NWEndpoint.Port
     public private(set) var name: String?
     public private(set) var domain: String?
-    public var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Server", qos: .userInteractive)
+    public private(set) var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Server", qos: .userInteractive)
     public var connection: NWConnection?
     
     // TODO: why does init have to be failing?
-    public init?(port: UInt16, bonjourName: String? = nil, domain: String? = nil) {
+    public init?(port: UInt16, bonjourName: String? = nil, delegate: OSCDelegate? = nil, domain: String? = nil) {
         
+        self.delegate = delegate
         self.domain = domain
-                
+        
         if let bonjourName = bonjourName {
             self.name = bonjourName
         }
@@ -35,7 +36,7 @@ public class OSCServer {
         setupListener()
     }
     
-    public func setupListener() {
+    private func setupListener() {
         
         /// listener parameters
         let udpOption = NWProtocolUDP.Options()

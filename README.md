@@ -60,8 +60,14 @@ class OSCHandler: OSCServerDelegate {
         }
     }
 }
-server.delegate =  OSCHandler()
+server.delegate = OSCHandler()
 ```
+### alternative: Steps 2 & 3 combined:
+Set delegate in init:
+```swift
+var server = OSCServer(port: 8080, delegate: OSCHandler())
+```
+
 ### OSC Client
 #### Step 1
 Import SwiftOSC framework into your project

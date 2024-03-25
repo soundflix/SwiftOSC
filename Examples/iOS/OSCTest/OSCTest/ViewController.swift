@@ -71,13 +71,11 @@ class ViewController: UIViewController, OSCDelegate, UITextFieldDelegate {
     
     @IBAction func changeClientPort(_ sender: UITextField) {
         if let text = sender.text {
-            if let port = UInt16(text) { // if integer
-                if port != clientPort {
-                    clientPort = Int(port)
-                    client = OSCClient(host: clientHost, port: UInt16(clientPort))
-                    defaults.set(clientPort, forKey: "clientPort")
-                    clientPortTextField.text = String(clientPort)
-                }
+            if let newPort = UInt16(text), newPort != clientPort {
+                clientPort = Int(newPort)
+                client = OSCClient(host: clientHost, port: newPort)
+                defaults.set(newPort, forKey: "clientPort")
+                clientPortTextField.text = String(newPort)
             }
         }
         clientPortTextField.text = String(clientPort)
@@ -85,14 +83,12 @@ class ViewController: UIViewController, OSCDelegate, UITextFieldDelegate {
     
     @IBAction func changeServerPort(_ sender: UITextField) {
         if let text = sender.text {
-            if let port = UInt16(text) { // if integer
-                if port != serverPort { // if different port
-                    if let oscServer = OSCServer(port: UInt16(port)) {
-                        server = oscServer
-                        serverPort = Int(port)
-                        defaults.set(serverPort, forKey: "serverPort")
-                        serverPortTextField.text = String(serverPort)
-                    }
+            if let newPort = UInt16(text), newPort != serverPort {
+                serverPort = Int(newPort)
+                if let oscServer = OSCServer(port: newPort, delegate: self) {
+                    server = oscServer
+                    defaults.set(newPort, forKey: "serverPort")
+                    serverPortTextField.text = String(newPort)
                 }
             }
         }
