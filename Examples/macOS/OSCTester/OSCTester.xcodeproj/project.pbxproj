@@ -1,0 +1,377 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DC2447732BB20AE400792D7F /* OSCTesterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2447722BB20AE400792D7F /* OSCTesterApp.swift */; };
+		DC2447752BB20AE400792D7F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2447742BB20AE400792D7F /* ContentView.swift */; };
+		DC2447772BB20AE500792D7F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC2447762BB20AE500792D7F /* Assets.xcassets */; };
+		DC24477A2BB20AE500792D7F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC2447792BB20AE500792D7F /* Preview Assets.xcassets */; };
+		DC2447832BB20C0700792D7F /* SwiftOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC2447822BB20C0700792D7F /* SwiftOSC.framework */; };
+		DC2447852BB20E0F00792D7F /* SwiftOSC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DC2447822BB20C0700792D7F /* SwiftOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DC2447872BB22BDF00792D7F /* OSCReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2447862BB22BDF00792D7F /* OSCReceiver.swift */; };
+		DC24478B2BB253A700792D7F /* ext OSCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC24478A2BB253A700792D7F /* ext OSCClient.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DC2447842BB20DBE00792D7F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DC2447852BB20E0F00792D7F /* SwiftOSC.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		DC24476F2BB20AE400792D7F /* OSCTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OSCTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC2447722BB20AE400792D7F /* OSCTesterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSCTesterApp.swift; sourceTree = "<group>"; };
+		DC2447742BB20AE400792D7F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		DC2447762BB20AE500792D7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DC2447792BB20AE500792D7F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		DC24477B2BB20AE500792D7F /* OSCTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OSCTester.entitlements; sourceTree = "<group>"; };
+		DC2447822BB20C0700792D7F /* SwiftOSC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOSC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC2447862BB22BDF00792D7F /* OSCReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSCReceiver.swift; sourceTree = "<group>"; };
+		DC24478A2BB253A700792D7F /* ext OSCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ext OSCClient.swift"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DC24476C2BB20AE400792D7F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC2447832BB20C0700792D7F /* SwiftOSC.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DC2447662BB20AE400792D7F = {
+			isa = PBXGroup;
+			children = (
+				DC2447712BB20AE400792D7F /* OSCTester */,
+				DC2447702BB20AE400792D7F /* Products */,
+				DC2447812BB20C0700792D7F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		DC2447702BB20AE400792D7F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DC24476F2BB20AE400792D7F /* OSCTester.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DC2447712BB20AE400792D7F /* OSCTester */ = {
+			isa = PBXGroup;
+			children = (
+				DC2447722BB20AE400792D7F /* OSCTesterApp.swift */,
+				DC2447742BB20AE400792D7F /* ContentView.swift */,
+				DC2447862BB22BDF00792D7F /* OSCReceiver.swift */,
+				DC24478A2BB253A700792D7F /* ext OSCClient.swift */,
+				DC2447762BB20AE500792D7F /* Assets.xcassets */,
+				DC24477B2BB20AE500792D7F /* OSCTester.entitlements */,
+				DC2447782BB20AE500792D7F /* Preview Content */,
+			);
+			path = OSCTester;
+			sourceTree = "<group>";
+		};
+		DC2447782BB20AE500792D7F /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				DC2447792BB20AE500792D7F /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		DC2447812BB20C0700792D7F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DC2447822BB20C0700792D7F /* SwiftOSC.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DC24476E2BB20AE400792D7F /* OSCTester */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DC24477E2BB20AE500792D7F /* Build configuration list for PBXNativeTarget "OSCTester" */;
+			buildPhases = (
+				DC24476B2BB20AE400792D7F /* Sources */,
+				DC24476C2BB20AE400792D7F /* Frameworks */,
+				DC24476D2BB20AE400792D7F /* Resources */,
+				DC2447842BB20DBE00792D7F /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OSCTester;
+			productName = OSCTester;
+			productReference = DC24476F2BB20AE400792D7F /* OSCTester.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DC2447672BB20AE400792D7F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1420;
+				TargetAttributes = {
+					DC24476E2BB20AE400792D7F = {
+						CreatedOnToolsVersion = 14.2;
+					};
+				};
+			};
+			buildConfigurationList = DC24476A2BB20AE400792D7F /* Build configuration list for PBXProject "OSCTester" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DC2447662BB20AE400792D7F;
+			productRefGroup = DC2447702BB20AE400792D7F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DC24476E2BB20AE400792D7F /* OSCTester */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DC24476D2BB20AE400792D7F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC24477A2BB20AE500792D7F /* Preview Assets.xcassets in Resources */,
+				DC2447772BB20AE500792D7F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DC24476B2BB20AE400792D7F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC2447752BB20AE400792D7F /* ContentView.swift in Sources */,
+				DC2447872BB22BDF00792D7F /* OSCReceiver.swift in Sources */,
+				DC2447732BB20AE400792D7F /* OSCTesterApp.swift in Sources */,
+				DC24478B2BB253A700792D7F /* ext OSCClient.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		DC24477C2BB20AE500792D7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DC24477D2BB20AE500792D7F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		DC24477F2BB20AE500792D7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OSCTester/OSCTester.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"OSCTester/Preview Content\"";
+				DEVELOPMENT_TEAM = FNLF39495D;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = soundflix.OSCTester;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DC2447802BB20AE500792D7F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OSCTester/OSCTester.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"OSCTester/Preview Content\"";
+				DEVELOPMENT_TEAM = FNLF39495D;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = soundflix.OSCTester;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DC24476A2BB20AE400792D7F /* Build configuration list for PBXProject "OSCTester" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DC24477C2BB20AE500792D7F /* Debug */,
+				DC24477D2BB20AE500792D7F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DC24477E2BB20AE500792D7F /* Build configuration list for PBXNativeTarget "OSCTester" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DC24477F2BB20AE500792D7F /* Debug */,
+				DC2447802BB20AE500792D7F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DC2447672BB20AE400792D7F /* Project object */;
+}

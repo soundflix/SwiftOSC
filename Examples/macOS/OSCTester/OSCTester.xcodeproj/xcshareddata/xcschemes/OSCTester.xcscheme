@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "033827B11D3999590065A3A7"
-               BuildableName = "OSCMonitor.app"
-               BlueprintName = "OSCMonitor"
-               ReferencedContainer = "container:OSCMonitor.xcodeproj">
+               BlueprintIdentifier = "DC24476E2BB20AE400792D7F"
+               BuildableName = "OSCTester.app"
+               BlueprintName = "OSCTester"
+               ReferencedContainer = "container:OSCTester.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -27,15 +27,6 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "033827B11D3999590065A3A7"
-            BuildableName = "OSCMonitor.app"
-            BlueprintName = "OSCMonitor"
-            ReferencedContainer = "container:OSCMonitor.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
       </Testables>
    </TestAction>
@@ -53,10 +44,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "033827B11D3999590065A3A7"
-            BuildableName = "OSCMonitor.app"
-            BlueprintName = "OSCMonitor"
-            ReferencedContainer = "container:OSCMonitor.xcodeproj">
+            BlueprintIdentifier = "DC24476E2BB20AE400792D7F"
+            BuildableName = "OSCTester.app"
+            BlueprintName = "OSCTester"
+            ReferencedContainer = "container:OSCTester.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -70,10 +61,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "033827B11D3999590065A3A7"
-            BuildableName = "OSCMonitor.app"
-            BlueprintName = "OSCMonitor"
-            ReferencedContainer = "container:OSCMonitor.xcodeproj">
+            BlueprintIdentifier = "DC24476E2BB20AE400792D7F"
+            BuildableName = "OSCTester.app"
+            BlueprintName = "OSCTester"
+            ReferencedContainer = "container:OSCTester.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
