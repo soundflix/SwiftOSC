@@ -22,7 +22,6 @@ public class OSCClient: NSObject, ObservableObject {
     
     public init(serviceType:String) {
         self.serviceType = serviceType
-        
         super.init()
         
         self.startBrowsing()
@@ -38,9 +37,7 @@ public class OSCClient: NSObject, ObservableObject {
             safeHost = "localhost"
         }
         self.host = NWEndpoint.Host(safeHost)
-        
         self.port = NWEndpoint.Port(integerLiteral: port)
-        
         super.init()
         
         setupConnection()
@@ -50,25 +47,21 @@ public class OSCClient: NSObject, ObservableObject {
     func setupConnection() {
 
         let params = NWParameters.udp
-        params.serviceClass = .signaling // DEBUG: test if this is effectively faster than '.best-effort'
+        params.serviceClass = .signaling
         
-        /// create the connection
-        if let host = self.host, let port = self.port {
-            connection = NWConnection(host: host, port: port, using: params)
-        }
-            
-        /// setup state update handler
+        guard let host = self.host, let port = self.port else { return }
+        connection = NWConnection(host: host, port: port, using: params)
         connection?.stateUpdateHandler = stateUpdateHandler(newState:)
-
-        /// start the connection
         connection?.start(queue: queue)
 
     }
     
     func stateUpdateHandler(newState: NWConnection.State) {
+        
         DispatchQueue.main.async {
             self.connectionState = newState
         }
+        
         switch newState {
         case .ready:
             guard let connection = self.connection else {
@@ -92,31 +85,43 @@ public class OSCClient: NSObject, ObservableObject {
             os_log("Client is setting up.", log: SwiftOSCLog, type: .info)
             break
         @unknown default:
-        fatalError()
+            fatalError()
         }
     }
     
     public func startBrowsing() {
-      // TODO
+      // TODO:
         os_log("NWBrowser not yet implemented", log: SwiftOSCLog, type: .error)
     }
-
-    public func send(_ element: OSCElement){
+    
+    public func send(_ element: OSCElement) {
         let data = element.oscData
         connection?.send(content: data, completion: .contentProcessed({ (error) in
+            DispatchQueue.main.async {
+                self.sendError = error
+            }
             if let error = error {
                 os_log("Send error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
-                DispatchQueue.main.async {
-                    self.sendError = error
-                }
+            } else {
+                print("OSC send completion without error")
             }
         }))
     }
     
     public func restart() {
-//        connection?.forceCancel()
         connection?.cancel()
-
+        
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
+            self.setupConnection()
+        }
+    }
+    
+    /// Cancel connection and listener, then start with new settings
+    public func restart(port: NWEndpoint.Port) {
+        connection?.cancel()
+        self.port = port
+        
+        /// Setup new listener
         Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
             self.setupConnection()
         }

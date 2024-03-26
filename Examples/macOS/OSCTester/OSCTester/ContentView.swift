@@ -21,8 +21,17 @@ struct ContentView: View {
     @State private var clientPort = "7004"
     
     func newServer() {
-        if let port = NWEndpoint.Port(rawValue: UInt16(serverPort) ?? 0) { // }, port != server.port {
+        if let portInt = UInt16(serverPort), let port = NWEndpoint.Port(rawValue: portInt) {
             server.restart(port: port, bonjourName: bonjourName)
+        } else {
+            NSSound.beep()
+        }
+    }
+    
+    func newClient() {
+        if let portInt = UInt16(clientPort), let port = NWEndpoint.Port(rawValue: portInt) {
+            client.restart(port: port)
+            client.push()
         } else {
             NSSound.beep()
         }
@@ -42,7 +51,7 @@ struct ContentView: View {
                     }
                 TextField("Port:", text: $clientPort)
                     .onSubmit {
-                        client.restart()
+                        newClient()
                     }
                     .frame(width: 45)
                 Text(" ----- ")
@@ -68,12 +77,14 @@ struct ContentView: View {
                     .foregroundColor(server.listenerState == .ready ? .green : .red)
                     .onTapGesture {
                         newServer()
+                        receiver.reset()
                     }
                 Image(systemName: "link")
                     .foregroundColor(server.connectionState == .ready ? .green : .red)
                 TextField("Port:", text: $serverPort)
                     .onSubmit {
                         newServer()
+                        receiver.reset()
                     }
                     .frame(width: 45)
                 Text("\(server.listenerState.description)")
@@ -87,16 +98,16 @@ struct ContentView: View {
             .frame(height: 25)
             HStack {
                 Button("Restart") {
-                    server.stop()
-                    receiver.text = ""
+                    newServer()
+                    receiver.reset()
                 }
                 Button("Stop") {
                     server.stop()
-                    receiver.text = ""
+                    receiver.reset()
                 }
             }
             HStack {
-                Text("rcv:")
+                Text("rcv: \(receiver.messageCount)")
                 Text("\(receiver.text)")
                     .padding(5)
                     .background(.gray.opacity(0.15))
@@ -107,7 +118,7 @@ struct ContentView: View {
         .padding()
         .onAppear {
             server.delegate = receiver
-            client.sendFloat(address: "/1", AFloat: 1.0)
+            client.push()
         }
     }
 }

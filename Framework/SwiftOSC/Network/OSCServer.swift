@@ -78,6 +78,7 @@ public class OSCServer: NSObject, ObservableObject {
 //            case .init(to: _, using: _):
 //                break
 //            default:
+//                print("newRemoteHost:\(String(describing: newConnection))")
 //                break
 //            }
             
@@ -149,7 +150,7 @@ public class OSCServer: NSObject, ObservableObject {
                 self?.decodePacket(data)
             }
             
-            if error == nil && self?.connection != nil{
+            if error == nil && self?.connection != nil {
                 self?.receive()
             }
         }
@@ -331,11 +332,11 @@ public class OSCServer: NSObject, ObservableObject {
     /// Cancel connection and listener, then start with new settings
     public func restart(port: NWEndpoint.Port, bonjourName: String? = nil) {
         stop()
+        self.port = port
+        self.name = bonjourName
         
         /// setup new listener
         Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
-            self.port = port
-            self.name = bonjourName
             self.setupListener()
         }
     }
