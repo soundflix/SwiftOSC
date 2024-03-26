@@ -10,7 +10,7 @@ import Foundation
 import Network
 import OSLog
 
-public class OSCServer {
+public class OSCServer: NSObject, ObservableObject {
     
     public weak var delegate: OSCDelegate?
     
@@ -21,9 +21,10 @@ public class OSCServer {
     public private(set) var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Server", qos: .userInteractive)
     public var connection: NWConnection?
     
-    // TODO: why does init have to be failing?
-    public init?(port: UInt16, bonjourName: String? = nil, delegate: OSCDelegate? = nil, domain: String? = nil) {
-        
+    @Published public var listenerState: NWListener.State = .setup
+    @Published public var connectionState: NWConnection.State = .setup
+    
+    public init(port: UInt16, bonjourName: String? = nil, delegate: OSCDelegate? = nil, domain: String? = nil) {
         self.delegate = delegate
         self.domain = domain
         
@@ -33,6 +34,8 @@ public class OSCServer {
         
         self.port = NWEndpoint.Port(integerLiteral: port)
         
+        super.init()
+
         setupListener()
     }
     
@@ -59,10 +62,9 @@ public class OSCServer {
 //            listener?.service?.noAutoRename
         }
         
-        /// handle incoming connections server will only connect to the latest connection
+        /// Handle incoming connections, server will only connect to the latest connection
         listener?.newConnectionHandler = { [weak self] (newConnection) in
             guard let self = self else { os_log("SwiftOSC Server newConnectionHandler: Error", log: SwiftOSCLog, type: .error); return }
-            os_log("Server '%{Public}@': New connection %{Public}@", log: SwiftOSCLog, type: .info, self.name ?? "<noName>", String(describing: newConnection))
 
             // TODO: check if new connection port is TotalMix
             // if endpoint type: case hostPort(host: NWEndpoint.Host, port: NWEndpoint.Port)
@@ -79,22 +81,35 @@ public class OSCServer {
 //                break
 //            }
             
-            /// cancel previous connection // check if it's own port
-            if self.connection != nil {
-                guard let connection = self.connection else { os_log("Server: Can not cancel NIL connection.", log: SwiftOSCLog, type: .error); return }
+            /// Cancel previous connection
+            if let connection = self.connection { // }, connection.state != .cancelled {
                 os_log("Server '%{Public}@': Cancelling connection %{Public}@", log: SwiftOSCLog, type: .info, self.name ?? "<noName>", String(describing: connection))
-                self.connection?.cancel()
+                connection.cancel()
             }
             
-            /// start new connection
+            /// Start new connection
+            os_log("Server '%{Public}@': New connection %{Public}@", log: SwiftOSCLog, type: .info, self.name ?? "<noName>", String(describing: newConnection))
             self.connection = newConnection
+            
+            
+            /// Handle connection state changes
+            self.connection?.stateUpdateHandler = { [weak self] (newState) in
+                guard let self = self else { os_log("Server.connection stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error); return }
+                DispatchQueue.main.async {
+                    self.connectionState = newState
+                }
+            }
+
             self.connection?.start(queue: (self.queue))
             self.receive()
         }
                 
         /// Handle listener state changes
         listener?.stateUpdateHandler = { [weak self] (newState) in
-            guard let self = self else { os_log("Server stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error); return }
+            guard let self = self else { os_log("Server.listener stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error); return }
+            DispatchQueue.main.async {
+                self.listenerState = newState
+            }
             switch newState {
             case .ready:
                 os_log("Server '%{Public}@': Ready, listening on port %{Public}@, delegate: %{Public}@", log: SwiftOSCLog, type: .default, self.name ?? "<noName>", String(describing: self.listener?.port ?? 0), String(describing: self.delegate))
@@ -107,13 +122,17 @@ public class OSCServer {
                     os_log("Server '%{Public}@' failed to create listener: %{Public}@", log: SwiftOSCLog, type: .error, self.name ?? "<noName>", String(describing: error))
                 }
                 /// wait a little with restart to reduce load
-                // TODO: store timer and cancel on next call!
                 _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
                     self.restart()
                 }
             case .cancelled:
                 os_log("Server '%{Public}@': Listener cancelled.", log: SwiftOSCLog, type: .info, self.name ?? "<noName>")
-            default:
+
+            case .setup:
+                break
+            case .waiting(_):
+                break
+            @unknown default:
                 break
             }
         }
@@ -265,7 +284,6 @@ public class OSCServer {
     }
     
     func sendToDelegate(_ element: OSCElement){
-        
         DispatchQueue.main.async { [weak self] in
             guard let strongSelf = self else { return }
             if let message = element as? OSCMessage {
@@ -293,19 +311,32 @@ public class OSCServer {
         }
     }
     
-    /// cancel connection and listener
+    /// Cancel connection and listener
     public func stop() {
-//        connection?.forceCancel()
+        // connection?.forceCancel()
         connection?.cancel()
         listener?.cancel()
-        // listener = nil
     }
     
-    /// cancel conection and listener, then start with refreshed settings
+    /// Cancel connection and listener, then start with refreshed settings
     public func restart() {
         stop()
         
         /// setup new listener
-        setupListener()
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
+            self.setupListener()
+        }
+    }
+    
+    /// Cancel connection and listener, then start with new settings
+    public func restart(port: NWEndpoint.Port, bonjourName: String? = nil) {
+        stop()
+        
+        /// setup new listener
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
+            self.port = port
+            self.name = bonjourName
+            self.setupListener()
+        }
     }
 }

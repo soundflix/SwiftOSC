@@ -10,7 +10,7 @@ import Foundation
 import Network
 import OSLog
 
-public class OSCClient {
+public class OSCClient: NSObject, ObservableObject {
 
     public var connection: NWConnection?
     public private(set) var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Client", qos: .userInteractive)
@@ -21,10 +21,14 @@ public class OSCClient {
     public private(set) var port: NWEndpoint.Port?
     
     public init(serviceType:String) {
-            self.serviceType = serviceType
-
-            self.startBrowsing()
-        }
+        self.serviceType = serviceType
+        
+        super.init()
+        
+        self.startBrowsing()
+    }
+    
+    @Published public var state: NWConnection.State = .setup
 
     public init(host: String, port: UInt16) {
         var safeHost = host
@@ -33,9 +37,11 @@ public class OSCClient {
             safeHost = "localhost"
         }
         self.host = NWEndpoint.Host(safeHost)
-
+        
         self.port = NWEndpoint.Port(integerLiteral: port)
-
+        
+        super.init()
+        
         setupConnection()
     }
 
@@ -59,6 +65,9 @@ public class OSCClient {
     }
     
     func stateUpdateHandler(newState: NWConnection.State) {
+        DispatchQueue.main.async {
+            self.state = newState
+        }
         switch newState {
         case .ready:
             guard let connection = self.connection else {
@@ -104,6 +113,8 @@ public class OSCClient {
 //        connection?.forceCancel()
         connection?.cancel()
 
-        setupConnection()
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { _ in
+            self.setupConnection()
+        }
     }
 }

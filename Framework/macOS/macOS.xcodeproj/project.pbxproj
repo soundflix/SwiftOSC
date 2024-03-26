@@ -30,6 +30,7 @@
 		034EE05A21D6159B00C4DD61 /* OSCAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034EE04521D6159B00C4DD61 /* OSCAddress.swift */; };
 		034EE05B21D6159B00C4DD61 /* OSCAddressPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034EE04621D6159B00C4DD61 /* OSCAddressPattern.swift */; };
 		DC0E478928E4440F00A27541 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0E478828E4440F00A27541 /* Log.swift */; };
+		DC2447892BB23D6B00792D7F /* ext Network State.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2447882BB23D6B00792D7F /* ext Network State.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		034EE04521D6159B00C4DD61 /* OSCAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSCAddress.swift; sourceTree = "<group>"; };
 		034EE04621D6159B00C4DD61 /* OSCAddressPattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSCAddressPattern.swift; sourceTree = "<group>"; };
 		DC0E478828E4440F00A27541 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		DC2447882BB23D6B00792D7F /* ext Network State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ext Network State.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +126,7 @@
 				034EE03721D6159B00C4DD61 /* OSCDelegate.swift */,
 				034EE03821D6159B00C4DD61 /* OSCServer.swift */,
 				034EE03921D6159B00C4DD61 /* OSCClient.swift */,
+				DC2447882BB23D6B00792D7F /* ext Network State.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -206,7 +209,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1420;
 				ORGANIZATIONNAME = "Devin Roth Music";
 				TargetAttributes = {
 					0339A3531D37FCEB0060ED91 = {
@@ -262,6 +265,7 @@
 				034EE04F21D6159B00C4DD61 /* OSCDelegate.swift in Sources */,
 				034EE05721D6159B00C4DD61 /* OSCMessage.swift in Sources */,
 				034EE05421D6159B00C4DD61 /* Data.swift in Sources */,
+				DC2447892BB23D6B00792D7F /* ext Network State.swift in Sources */,
 				034EE05A21D6159B00C4DD61 /* OSCAddress.swift in Sources */,
 				034EE05221D6159B00C4DD61 /* Date.swift in Sources */,
 				034EE04921D6159B00C4DD61 /* OSCBlob.swift in Sources */,
@@ -312,7 +316,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -374,7 +379,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -400,6 +406,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = FNLF39495D;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -424,8 +431,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = FNLF39495D;
 				DYLIB_COMPATIBILITY_VERSION = 1;
