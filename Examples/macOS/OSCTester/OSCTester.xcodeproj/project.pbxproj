@@ -15,6 +15,7 @@
 		DC2447852BB20E0F00792D7F /* SwiftOSC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DC2447822BB20C0700792D7F /* SwiftOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC2447872BB22BDF00792D7F /* OSCReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2447862BB22BDF00792D7F /* OSCReceiver.swift */; };
 		DC24478B2BB253A700792D7F /* ext OSCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC24478A2BB253A700792D7F /* ext OSCClient.swift */; };
+		DCBA87482BB36B14004F94C9 /* OSCSenderField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBA87472BB36B14004F94C9 /* OSCSenderField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -41,6 +42,7 @@
 		DC2447822BB20C0700792D7F /* SwiftOSC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOSC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC2447862BB22BDF00792D7F /* OSCReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSCReceiver.swift; sourceTree = "<group>"; };
 		DC24478A2BB253A700792D7F /* ext OSCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ext OSCClient.swift"; sourceTree = "<group>"; };
+		DCBA87472BB36B14004F94C9 /* OSCSenderField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSCSenderField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 			children = (
 				DC2447722BB20AE400792D7F /* OSCTesterApp.swift */,
 				DC2447742BB20AE400792D7F /* ContentView.swift */,
+				DCBA87472BB36B14004F94C9 /* OSCSenderField.swift */,
 				DC2447862BB22BDF00792D7F /* OSCReceiver.swift */,
 				DC24478A2BB253A700792D7F /* ext OSCClient.swift */,
 				DC2447762BB20AE500792D7F /* Assets.xcassets */,
@@ -174,6 +177,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC2447752BB20AE400792D7F /* ContentView.swift in Sources */,
+				DCBA87482BB36B14004F94C9 /* OSCSenderField.swift in Sources */,
 				DC2447872BB22BDF00792D7F /* OSCReceiver.swift in Sources */,
 				DC2447732BB20AE400792D7F /* OSCTesterApp.swift in Sources */,
 				DC24478B2BB253A700792D7F /* ext OSCClient.swift in Sources */,

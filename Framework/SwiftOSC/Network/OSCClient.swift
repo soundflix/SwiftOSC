@@ -29,6 +29,7 @@ public class OSCClient: NSObject, ObservableObject {
     }
     
     @Published public var connectionState: NWConnection.State = .setup
+    @Published public var sendError: NWError?
 
     public init(host: String, port: UInt16) {
         var safeHost = host
@@ -105,6 +106,9 @@ public class OSCClient: NSObject, ObservableObject {
         connection?.send(content: data, completion: .contentProcessed({ (error) in
             if let error = error {
                 os_log("Send error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
+                DispatchQueue.main.async {
+                    self.sendError = error
+                }
             }
         }))
     }

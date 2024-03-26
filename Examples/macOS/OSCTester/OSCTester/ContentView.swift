@@ -30,12 +30,8 @@ struct ContentView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Button("Send") {
-//                client.send(OSCMessage(OSCAddressPattern("/1/mute/1/1")!, [Float(1)]))
-//                client.sendFloat(address: "/busOutput", AFloat: 1.0)
-//                client.sendFloat(address: "/1", AFloat: 1.0)
-                client.sendFloat(address: "/1/mute/1/3", AFloat: 1.0)
-            }
+            Text("CLIENT")
+                .foregroundColor(.secondary)
             HStack {
                 Image(systemName: "square.and.arrow.up")
                     .foregroundColor(.gray)
@@ -54,14 +50,19 @@ struct ContentView: View {
                     .frame(idealWidth: 200)
                 Divider()
                 Text("\(client.connectionState.description)")
+                    .foregroundColor(client.connectionState != .ready ? .red : .secondary)
                     .frame(idealWidth: 200)
+                Divider()
+                Text("\(String(describing: client.sendError))")
+                    .frame(idealWidth: 200)
+                    .foregroundColor(client.sendError != nil ? .red : .secondary)
             }
+            .frame(height: 25)
+            OSCSenderField(client: client)
             
             Divider()
-            Button("Stop server") {
-                server.stop()
-                receiver.text = ""
-            }
+            Text("SERVER")
+                .foregroundColor(.secondary)
             HStack {
                 Image(systemName: "square.and.arrow.down")
                     .foregroundColor(server.listenerState == .ready ? .green : .red)
@@ -76,25 +77,47 @@ struct ContentView: View {
                     }
                     .frame(width: 45)
                 Text("\(server.listenerState.description)")
+                    .foregroundColor(server.listenerState != .ready ? .red : .secondary)
                     .frame(idealWidth: 200)
                 Divider()
                 Text("\(server.connectionState.description)")
+                    .foregroundColor(server.connectionState != .ready ? .red : .secondary)
                     .frame(idealWidth: 200)
             }
-            Text("\(receiver.text)")
+            .frame(height: 25)
+            HStack {
+                Button("Restart") {
+                    server.stop()
+                    receiver.text = ""
+                }
+                Button("Stop") {
+                    server.stop()
+                    receiver.text = ""
+                }
+            }
+            HStack {
+                Text("rcv:")
+                Text("\(receiver.text)")
+                    .padding(5)
+                    .background(.gray.opacity(0.15))
+                    .cornerRadius(5)
+            }
+            Spacer()
         }
         .padding()
-        .fixedSize()
         .onAppear {
             server.delegate = receiver
+            client.sendFloat(address: "/1", AFloat: 1.0)
         }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        let server: OSCServer = OSCServer(port: 9004)
+        let server = OSCServer(port: 9004)
+        let client = OSCClient(host: "localhost", port: 7004)
         ContentView()
             .environmentObject(server)
+            .environmentObject(client)
     }
 }
