@@ -20,6 +20,8 @@ struct ContentView: View {
     @State private var bonjourName: String? = nil
     @State private var clientPort = "7004"
     
+    @State private var newTextArrived = false
+    
     func newServer() {
         if let portInt = UInt16(serverPort), let port = NWEndpoint.Port(rawValue: portInt) {
             server.restart(port: port, bonjourName: bonjourName)
@@ -107,8 +109,16 @@ struct ContentView: View {
                 }
             }
             HStack {
-                Text("rcv: \(receiver.messageCount)")
+                Text("Rcv: \(receiver.messageCount)")
                 Text("\(receiver.text)")
+                    .scaleEffect(newTextArrived ? 1.05 : 1)
+                    .animation(.easeInOut(duration: 0.3), value: newTextArrived)
+                    .onChange(of: receiver.messageCount) { _ in
+                        newTextArrived = true
+                        Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {_ in
+                            self.newTextArrived = false
+                        }
+                    }
                     .padding(5)
                     .background(.gray.opacity(0.15))
                     .cornerRadius(5)
