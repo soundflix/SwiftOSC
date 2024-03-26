@@ -40,7 +40,7 @@ struct ContentView: View {
                 Image(systemName: "square.and.arrow.up")
                     .foregroundColor(.gray)
                 Image(systemName: "link")
-                    .foregroundColor(client.state == .ready ? .green : .red)
+                    .foregroundColor(client.connectionState == .ready ? .green : .red)
                     .onTapGesture {
                         client.restart()
                     }
@@ -53,7 +53,7 @@ struct ContentView: View {
                     .foregroundColor(.secondary)
                     .frame(idealWidth: 200)
                 Divider()
-                Text("\(client.state.description)")
+                Text("\(client.connectionState.description)")
                     .frame(idealWidth: 200)
             }
             

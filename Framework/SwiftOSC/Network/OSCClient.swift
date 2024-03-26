@@ -28,7 +28,7 @@ public class OSCClient: NSObject, ObservableObject {
         self.startBrowsing()
     }
     
-    @Published public var state: NWConnection.State = .setup
+    @Published public var connectionState: NWConnection.State = .setup
 
     public init(host: String, port: UInt16) {
         var safeHost = host
@@ -66,7 +66,7 @@ public class OSCClient: NSObject, ObservableObject {
     
     func stateUpdateHandler(newState: NWConnection.State) {
         DispatchQueue.main.async {
-            self.state = newState
+            self.connectionState = newState
         }
         switch newState {
         case .ready:
