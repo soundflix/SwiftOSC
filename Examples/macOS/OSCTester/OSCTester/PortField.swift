@@ -24,39 +24,46 @@ struct PortField: View {
     
     @Binding var port: NWEndpoint.Port
     @State private var oldPort: NWEndpoint.Port = NWEndpoint.Port(integerLiteral: 0)
-    @State private var newPort: NWEndpoint.Port = NWEndpoint.Port(integerLiteral: 0)
+    @State private var newPortString: String = ""
     @FocusState private var portIsFocused: Bool
 
     var body: some View {
         
         let validatePort = Binding(
             get: {
-                String(self.newPort.rawValue)
+                newPortString
             },
             // FIXME: replaces & truncates silently. How to warn/signal when invalid?
             set: {
-                self.newPort = NWEndpoint.Port(integerLiteral: UInt16($0) ?? self.port.rawValue)
+                newPortString = $0
             })
         
         TextField("port", text: validatePort)
             .multilineTextAlignment(.trailing)
             .frame(width: 50) /// fits for up to '65535'
             .onAppear {
-                self.oldPort = $port.wrappedValue
-                self.newPort = $port.wrappedValue
-                print("PortField onAppear: old: \(oldPort) new: \(newPort)")
+                oldPort = $port.wrappedValue
+                newPortString = String(oldPort.rawValue)
+//                print("PortField onAppear: old: \(oldPort) new: \(newPortString)")
             }
             .focused($portIsFocused)
             .onSubmit {
                 portIsFocused = false
-                print("PortField submitted \(port.rawValue)")
-                port = newPort
-                oldPort = newPort
+                if let newInt16 = UInt16(newPortString) {
+                    let newPort = NWEndpoint.Port(integerLiteral: newInt16)
+                    port = newPort
+                    oldPort = newPort
+                } else {
+                    print("PortField invalid entry \(newPortString), replacing with oldPort \(oldPort.rawValue)")
+                    port = oldPort
+                    newPortString = String(oldPort.rawValue)
+                }
+//                print("PortField submitted \(port.rawValue)")
             }
             .onExitCommand {
                 portIsFocused = false
                 port = oldPort
-                newPort = oldPort
+                newPortString = String(oldPort.rawValue)
             }
     }
 }
