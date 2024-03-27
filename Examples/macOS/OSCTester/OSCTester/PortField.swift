@@ -33,6 +33,7 @@ struct PortField: View {
             get: {
                 String(self.newPort.rawValue)
             },
+            // FIXME: replaces & truncates silently. How to warn/signal when invalid?
             set: {
                 self.newPort = NWEndpoint.Port(integerLiteral: UInt16($0) ?? self.port.rawValue)
             })
@@ -68,6 +69,14 @@ struct PortField_Previews: PreviewProvider {
             PortField(port: .constant(NWEndpoint.Port(integerLiteral: UInt16(0))))
             
             PortField(port: .constant(NWEndpoint.Port(integerLiteral: UInt16(Int(65535)))))
+            
+//            PortField(port: .constant(UInt16(111111111111111111111111111111)))
+            // Integer literal '111111111111111111111111111111' overflows when stored into 'UInt16'
+            
+//            PortField(port: .constant(Int(7004)))
+            // Cannot convert value of type 'Int' to expected argument type 'UInt16'
         }
+//        .frame(width: 40) // fits 4 numbers
+        .frame(width: 50) // fits 5 numbers
     }
 }
