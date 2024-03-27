@@ -42,12 +42,16 @@ struct ContentView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            PortField(port: $testPort)
-            .onSubmit {
-                print("testPort onSubmit modifier: testPort was set to \(testPort)")
-            }
-            .onChange(of: testPort) { newValue in
-                print("testPort onChange: \(newValue.rawValue), oldValue: \(testPort.rawValue)")
+            HStack {
+                PortField(port: $testPort)
+                    .onSubmit {
+                        print("testPort onSubmit modifier: testPort was set to \(testPort)")
+                    }
+                    .onChange(of: testPort) { newValue in
+                        print("testPort onChange: \(newValue.rawValue), oldValue: \(testPort.rawValue)")
+                    }
+                Text("\(String(testPort.rawValue))")
+                    .foregroundColor(.secondary)
             }
             
             HStack {
