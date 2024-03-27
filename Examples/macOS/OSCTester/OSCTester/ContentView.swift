@@ -10,50 +10,27 @@ import SwiftOSC
 import Network
 
 struct ContentView: View {
-    @EnvironmentObject var server: OSCServer
-    @StateObject var receiver = OSCReceiver()
     @EnvironmentObject var client: OSCClient
+    @EnvironmentObject var server: OSCServer
+    @StateObject private var receiver = OSCReceiver()
     
-    // FIXME: store as UInt16
-    @State private var serverPort = "9004"
+    @State private var clientPort: NWEndpoint.Port = 7004
+    @State private var serverPort: NWEndpoint.Port = 9004
     @State private var bonjourName: String? = nil
-    @State private var clientPort = "7004"
-    
-    @State private var testPort: NWEndpoint.Port = NWEndpoint.Port(integerLiteral: UInt16(1234))
-    
+        
     @State private var newTextArrived = false
     
     func newServer() {
-        if let portInt = UInt16(serverPort), let port = NWEndpoint.Port(rawValue: portInt) {
-            server.restart(port: port, bonjourName: bonjourName)
-        } else {
-            NSSound.beep()
-        }
+        server.restart(port: serverPort, bonjourName: bonjourName)
     }
     
     func newClient() {
-        if let portInt = UInt16(clientPort), let port = NWEndpoint.Port(rawValue: portInt) {
-            client.restart(port: port)
-            client.push()
-        } else {
-            NSSound.beep()
-        }
+        client.restart(port: clientPort)
+        client.push()
     }
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                PortField(port: $testPort)
-                    .onSubmit {
-                        print("testPort onSubmit modifier: testPort was set to \(testPort)")
-                    }
-                    .onChange(of: testPort) { newValue in
-                        print("testPort onChange: \(newValue.rawValue), oldValue: \(testPort.rawValue)")
-                    }
-                Text("\(String(testPort.rawValue))")
-                    .foregroundColor(.secondary)
-            }
-            
             HStack {
                 Text("CLIENT")
                     .foregroundColor(.secondary)
@@ -68,11 +45,10 @@ struct ContentView: View {
                     .foregroundColor(.gray)
                 Image(systemName: "link")
                     .foregroundColor(client.connectionState == .ready ? .green : .red)
-                TextField("Port:", text: $clientPort)
-                    .onSubmit {
+                PortField(port: $clientPort)
+                    .onChange(of: clientPort) { _ in
                         newClient()
                     }
-                    .frame(width: 45)
                 Text(" ----- ")
                     .foregroundColor(.secondary)
                     .frame(idealWidth: 200)
@@ -102,18 +78,13 @@ struct ContentView: View {
             HStack {
                 Image(systemName: "square.and.arrow.down")
                     .foregroundColor(server.listenerState == .ready ? .green : .red)
-                    .onTapGesture {
-                        newServer()
-                        receiver.reset()
-                    }
                 Image(systemName: "link")
                     .foregroundColor(server.connectionState == .ready ? .green : .red)
-                TextField("Port:", text: $serverPort)
-                    .onSubmit {
+                PortField(port: $serverPort)
+                    .onChange(of: serverPort) { _ in
                         newServer()
                         receiver.reset()
                     }
-                    .frame(width: 45)
                 Text("\(server.listenerState.description)")
                     .foregroundColor(server.listenerState != .ready ? .red : .secondary)
                     .frame(idealWidth: 200)
