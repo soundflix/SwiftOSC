@@ -8,7 +8,6 @@
 import SwiftUI
 import SwiftOSC
 import Network
-import AppKit
 
 struct ContentView: View {
     @EnvironmentObject var server: OSCServer
@@ -41,16 +40,20 @@ struct ContentView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("CLIENT")
-                .foregroundColor(.secondary)
+            HStack {
+                Text("CLIENT")
+                    .foregroundColor(.secondary)
+                Button("Restart") {
+                    client.restart()
+                }
+//                Text("\(client.connection.debugDescription)")
+//                    .foregroundColor(.secondary)
+            }
             HStack {
                 Image(systemName: "square.and.arrow.up")
                     .foregroundColor(.gray)
                 Image(systemName: "link")
                     .foregroundColor(client.connectionState == .ready ? .green : .red)
-                    .onTapGesture {
-                        client.restart()
-                    }
                 TextField("Port:", text: $clientPort)
                     .onSubmit {
                         newClient()
@@ -72,8 +75,16 @@ struct ContentView: View {
             OSCSenderField(client: client)
             
             Divider()
-            Text("SERVER")
-                .foregroundColor(.secondary)
+            HStack {
+                Text("SERVER")
+                    .foregroundColor(.secondary)
+                Button("Restart") {
+                    newServer()
+                    receiver.reset()
+                }
+//                Text("\(server.connection.debugDescription)")
+//                    .foregroundColor(.secondary)
+            }
             HStack {
                 Image(systemName: "square.and.arrow.down")
                     .foregroundColor(server.listenerState == .ready ? .green : .red)
@@ -99,20 +110,12 @@ struct ContentView: View {
             }
             .frame(height: 25)
             HStack {
-                Button("Restart") {
-                    newServer()
-                    receiver.reset()
-                }
-                Button("Stop") {
-                    server.stop()
-                    receiver.reset()
-                }
-            }
-            HStack {
                 Text("Rcv: \(receiver.messageCount)")
+                    .frame(width: 60, alignment: .leading)
                 Text("\(receiver.text)")
-                    .scaleEffect(newTextArrived ? 1.05 : 1)
-                    .animation(.easeInOut(duration: 0.3), value: newTextArrived)
+                    .font(.system(.body, design: .monospaced))
+                    .foregroundColor(newTextArrived ? .brown : .primary)
+                    .animation(.spring(), value: newTextArrived)
                     .onChange(of: receiver.messageCount) { _ in
                         newTextArrived = true
                         Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {_ in

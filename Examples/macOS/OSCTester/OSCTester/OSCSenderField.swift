@@ -13,13 +13,22 @@ struct OSCSenderField: View {
     @State private var address = "/1/mute/1/3"
     @State private var float: Float = 1.0
     
+    private func send() {
+        client.sendFloat(address: address, AFloat: float)
+    }
     var body: some View {
         HStack {
             Button("Send") {
                 client.sendFloat(address: address, AFloat: float)
             }
             TextField("address:", text: $address)
+                .onSubmit {
+                    send()
+                }
             TextField("float", value: $float, format: .number)
+                .onSubmit {
+                    send()
+                }
         }
     }
 }
