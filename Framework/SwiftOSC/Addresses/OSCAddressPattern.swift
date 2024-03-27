@@ -16,10 +16,7 @@ import OSLog
  
      The parts of an OSC Address or an OSC Address Pattern are the substrings between adjacent pairs of forward slash characters and the substring after the last forward slash character.
  
-     A received OSC Message must be disptched to every OSC method in the current OSC Address Space whose OSC Address matches the OSC Message's OSC Address Pattern. An OSC Address Pattern matches an OSC Address if
- 
-     The OSC Address and the OSC Address Pattern contain the same number of parts; and
-     Each part of the OSC Address Pattern matches the corresponding part of the OSC Address.
+     A received OSC Message must be dispatched to every OSC method in the current OSC Address Space whose OSC Address matches the OSC Message's OSC Address Pattern. An OSC Address Pattern matches an OSC Address if the OSC Address and the OSC Address Pattern contain the same number of parts; and each part of the OSC Address Pattern matches the corresponding part of the OSC Address.
  
      A part of an OSC Address Pattern matches a part of an OSC Address if every consecutive character in the OSC Address Pattern matches the next consecutive substring of the OSC Address and every character in the OSC Address is matched by something in the OSC Address Pattern. These are the matching rules for characters in the OSC Address Pattern:
  
@@ -42,7 +39,7 @@ if let addressPattern = OSCAddressPattern("/test/this/pattern"){
      */
 public struct OSCAddressPattern {
     
-    //MARK: Properties
+    // MARK: Properties
     public let string: String
     internal var regex = ""
     internal var regexPath = ""
@@ -53,7 +50,7 @@ public struct OSCAddressPattern {
         }
     }
     
-    //MARK: Methods
+    // MARK: Methods
     public init?(_ addressPattern: String) {
         
         // Check if addressPattern is valid. Return nil if not.
@@ -79,7 +76,7 @@ public struct OSCAddressPattern {
         }
         // [ must be closed, no invalid characters inside
         if addressPattern.range(of: "\\[(?![^\\[\\{\\},?\\*/]+\\])", options: .regularExpression) != nil {
-            os_log("\"%{Public}@\" is an invalid address: [] must closed and not contain invalid characters.", log: SwiftOSCLog, type: .error, addressPattern)
+            os_log("\"%{Public}@\" is an invalid address: [] must be closed and not contain invalid characters.", log: SwiftOSCLog, type: .error, addressPattern)
             return nil
         }
         var open = addressPattern.components(separatedBy: "[").count
