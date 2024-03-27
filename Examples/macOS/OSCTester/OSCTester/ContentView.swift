@@ -19,7 +19,7 @@ struct ContentView: View {
     @State private var bonjourName: String? = nil
     @State private var clientPort = "7004"
     
-    @State private var testPort: UInt16 = 7004
+    @State private var testPort: NWEndpoint.Port = NWEndpoint.Port(integerLiteral: UInt16(1234))
     
     @State private var newTextArrived = false
     
@@ -44,8 +44,12 @@ struct ContentView: View {
         VStack(alignment: .leading) {
             PortField(port: $testPort)
             .onSubmit {
-                print("onSubmit modifier: testPort was set to \(testPort)")
+                print("testPort onSubmit modifier: testPort was set to \(testPort)")
             }
+            .onChange(of: testPort) { newValue in
+                print("testPort onChange: \(newValue.rawValue), oldValue: \(testPort.rawValue)")
+            }
+            
             HStack {
                 Text("CLIENT")
                     .foregroundColor(.secondary)

@@ -84,10 +84,10 @@
 				DCBA87472BB36B14004F94C9 /* OSCSenderField.swift */,
 				DC2447862BB22BDF00792D7F /* OSCReceiver.swift */,
 				DC24478A2BB253A700792D7F /* ext OSCClient.swift */,
+				DCBA87492BB434CA004F94C9 /* PortField.swift */,
 				DC2447762BB20AE500792D7F /* Assets.xcassets */,
 				DC24477B2BB20AE500792D7F /* OSCTester.entitlements */,
 				DC2447782BB20AE500792D7F /* Preview Content */,
-				DCBA87492BB434CA004F94C9 /* PortField.swift */,
 			);
 			path = OSCTester;
 			sourceTree = "<group>";
