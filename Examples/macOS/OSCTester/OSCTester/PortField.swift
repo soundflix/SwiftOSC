@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Network
+//import OSLog
 
 /// Custom **TextField for port numbers** with validation.
 /// Invalid entry will be will replaced with previous value.
@@ -26,25 +27,19 @@ struct PortField: View {
     @State private var oldPort: NWEndpoint.Port = NWEndpoint.Port(integerLiteral: 0)
     @State private var newPortString: String = ""
     @FocusState private var portIsFocused: Bool
+    
+    @State private var animator: Int = 0
+    @State private var animationIsRunning: Bool = false
 
     var body: some View {
         
-        let validatePort = Binding(
-            get: {
-                newPortString
-            },
-            // FIXME: replaces & truncates silently. How to warn/signal when invalid?
-            set: {
-                newPortString = $0
-            })
-        
-        TextField("port", text: validatePort)
+        TextField("port", text: $newPortString)
             .multilineTextAlignment(.trailing)
             .frame(width: 50) /// fits for up to '65535'
+            .offset(x: animationIsRunning ? 5 : 0)
             .onAppear {
                 oldPort = $port.wrappedValue
                 newPortString = String(oldPort.rawValue)
-//                print("PortField onAppear: old: \(oldPort) new: \(newPortString)")
             }
             .focused($portIsFocused)
             .onSubmit {
@@ -55,10 +50,17 @@ struct PortField: View {
                     oldPort = newPort
                 } else {
                     print("PortField invalid entry \(newPortString), replacing with oldPort \(oldPort.rawValue)")
+//                    os_log("PortField: invalid value entered '%{Public}@', replacing with previous value '%{Public}@'. Valid range is 0 – 65535", log: SwiftOSCLog, type: .fault, newPortString, String(oldPort.rawValue))
                     port = oldPort
                     newPortString = String(oldPort.rawValue)
+                    
+                    // FIXME: animation has random white flashes on background
+                    animationIsRunning = true
+                    withAnimation(Animation.spring(response: 0.2, dampingFraction: 0.2, blendDuration: 0.2)) {
+                        animationIsRunning = false
+                    }
                 }
-//                print("PortField submitted \(port.rawValue)")
+                // print("PortField submitted \(port.rawValue)")
             }
             .onExitCommand {
                 portIsFocused = false
