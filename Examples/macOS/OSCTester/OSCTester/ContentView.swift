@@ -19,6 +19,8 @@ struct ContentView: View {
     @State private var bonjourName: String? = nil
     @State private var clientPort = "7004"
     
+    @State private var testPort: UInt16 = 7004
+    
     @State private var newTextArrived = false
     
     func newServer() {
@@ -40,6 +42,10 @@ struct ContentView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
+            PortField(port: $testPort)
+            .onSubmit {
+                print("onSubmit modifier: testPort was set to \(testPort)")
+            }
             HStack {
                 Text("CLIENT")
                     .foregroundColor(.secondary)

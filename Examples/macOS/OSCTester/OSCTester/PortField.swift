@@ -10,18 +10,23 @@ import SwiftUI
 struct PortField: View {
     
     @Binding var port: UInt16
+    @FocusState private var portIsFocused: Bool
     
     var body: some View {
-        let convertPort = Binding(
+        
+        let validatePort = Binding(
             get: { String(self.port) },
+            // FIXME: truncates silently. Warn/signal when invalid?
             set: { self.port = UInt16($0) ?? self.port })
-
-        // FIXME: alignment: .trailing in TextField?
-        TextField("Port:", text: convertPort)
-//            .onSubmit {
-//                newClient()
-//            }
+        
+        TextField("Port:", text: validatePort)
+            .multilineTextAlignment(.trailing)
             .frame(width: 45)
+            .focused($portIsFocused)
+            .onExitCommand {
+                // FIXME: set old value here
+                portIsFocused = false
+            }
     }
 }
 
