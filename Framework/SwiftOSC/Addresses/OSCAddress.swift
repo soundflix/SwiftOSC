@@ -67,3 +67,9 @@ public struct OSCAddress {
         string = address
     }
 }
+
+extension OSCAddress: Equatable {
+    public static func ==(lhs: OSCAddress, rhs: OSCAddress) -> Bool {
+        return lhs.string == rhs.string
+    }
+}

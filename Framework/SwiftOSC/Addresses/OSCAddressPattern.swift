@@ -194,3 +194,8 @@ public struct OSCAddressPattern {
     }
 }
 
+extension OSCAddressPattern: Equatable {
+    public static func ==(lhs: OSCAddressPattern, rhs: OSCAddressPattern) -> Bool {
+        return lhs.string == rhs.string
+    }
+}
