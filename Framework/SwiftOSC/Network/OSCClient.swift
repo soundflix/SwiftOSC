@@ -103,7 +103,9 @@ public class OSCClient: NSObject, ObservableObject {
             if let error = error {
                 os_log("Send error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
             } else {
-                print("OSCClient.send() message success")
+                if let message = element as? OSCMessage {
+                    print("OSCClient \(self.connection?.endpoint.debugDescription ?? "<noConnDesc>"): send message success: \(message.description)")
+                }
             }
         }))
     }
