@@ -103,7 +103,7 @@ public class OSCClient: NSObject, ObservableObject {
             if let error = error {
                 os_log("Send error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
             } else {
-                print("OSC send completion without error")
+                print("OSCClient.send() message success")
             }
         }))
     }
