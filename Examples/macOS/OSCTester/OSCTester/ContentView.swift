@@ -32,7 +32,7 @@ struct ContentView: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text("CLIENT")
+                Text("CLIENT (Send)   ")
                     .foregroundColor(.secondary)
                 Button("Restart") {
                     client.restart()
@@ -66,7 +66,7 @@ struct ContentView: View {
             
             Divider()
             HStack {
-                Text("SERVER")
+                Text("SERVER (Receive)")
                     .foregroundColor(.secondary)
                 Button("Restart") {
                     newServer()
