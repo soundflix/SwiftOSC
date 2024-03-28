@@ -18,7 +18,7 @@ struct ContentView: View {
     @State private var serverPort: NWEndpoint.Port = 9004
     @State private var bonjourName: String? = nil
         
-    @State private var newTextArrived = false
+    @State private var newMessageHighlight = false
     
     func newServer() {
         server.restart(port: serverPort, bonjourName: bonjourName)
@@ -99,12 +99,12 @@ struct ContentView: View {
                     .frame(width: 60, alignment: .leading)
                 Text("\(receiver.text)")
                     .font(.system(.body, design: .monospaced))
-                    .foregroundColor(newTextArrived ? .brown : .primary)
-                    .animation(.spring(), value: newTextArrived)
+                    .foregroundColor(newMessageHighlight ? .brown : .primary)
+                    .animation(.spring(), value: newMessageHighlight)
                     .onChange(of: receiver.messageCount) { _ in
-                        newTextArrived = true
+                        newMessageHighlight = true
                         Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {_ in
-                            self.newTextArrived = false
+                            self.newMessageHighlight = false
                         }
                     }
                     .padding(5)
