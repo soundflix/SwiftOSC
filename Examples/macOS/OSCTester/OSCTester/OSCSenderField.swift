@@ -21,6 +21,7 @@ struct OSCSenderField: View {
             Button("Send") {
                 client.sendFloat(address: address, AFloat: float)
             }
+            .keyboardShortcut("s")
             TextField("address:", text: $address)
                 .onSubmit {
                     send()
