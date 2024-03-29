@@ -129,3 +129,13 @@ public class OSCClient: NSObject, ObservableObject {
         }
     }
 }
+
+extension OSCClient {
+    // MARK: Convenience methods
+    func sendFloat(address: String, AFloat: Float) {
+        guard let oscAddress = OSCAddressPattern(address) else { return }
+        let message = OSCMessage(oscAddress, Float(AFloat))
+        print("out\(message.description)")
+        self.send(message)
+    }
+}
