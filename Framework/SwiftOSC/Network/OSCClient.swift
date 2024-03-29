@@ -28,7 +28,7 @@ public class OSCClient: NSObject, ObservableObject {
     }
     
     @Published public var connectionState: NWConnection.State = .setup
-    @Published public var sendError: NWError?
+    @Published public var sendError: String = ""
 
     public init(host: String, port: UInt16) {
         var safeHost = host
@@ -97,15 +97,31 @@ public class OSCClient: NSObject, ObservableObject {
     public func send(_ element: OSCElement) {
         let data = element.oscData
         connection?.send(content: data, completion: .contentProcessed({ (error) in
-            DispatchQueue.main.async {
-                self.sendError = error
-            }
+            let errorDescription: String
             if let error = error {
-                os_log("Send error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
-            } else {
-                if let message = element as? OSCMessage {
-                    print("OSCClient \(self.connection?.endpoint.debugDescription ?? "<noConnDesc>"): send message success: \(message.description)")
+                switch error {
+                case .posix(let errorNumber):
+                    errorDescription = "\(POSIXError(errorNumber).localizedDescription.replacingOccurrences(of: "The operation couldn’t be completed. ", with: "")) (\(errorNumber.rawValue))"
+                case .tls(let osStatus):
+                    errorDescription = " \(error.localizedDescription) (TLS \(osStatus))"
+                case .dns(let dnsServiceError):
+                    errorDescription = "\(error.localizedDescription) (DNS \(dnsServiceError))"
+                @unknown default:
+                    errorDescription = "Unkown send error! \(error.localizedDescription)"
                 }
+                os_log("Send error: %{Public}@", log: SwiftOSCLog, type: .error, errorDescription)
+            } else {
+                errorDescription = ""
+                if let message = element as? OSCMessage {
+                    let successText = "Client \(self.connection?.endpoint.debugDescription ?? "<noConnDesc>") Send success: \(message.description)"
+                    os_log("%{Public}@", log: SwiftOSCLog, type: .error, successText)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.sendError = errorDescription
+                // TODO: set programmatic error state
+                
             }
         }))
     }

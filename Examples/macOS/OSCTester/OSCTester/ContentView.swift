@@ -59,7 +59,7 @@ struct ContentView: View {
                 Divider()
                 Text("\(String(describing: client.sendError))")
                     .frame(idealWidth: 200)
-                    .foregroundColor(client.sendError != nil ? .red : .secondary)
+                    .foregroundColor(.red)
             }
             .frame(height: 25)
             OSCSenderField(client: client)
@@ -97,6 +97,7 @@ struct ContentView: View {
             HStack {
                 Text("Rcv: \(receiver.messageCount)")
                     .frame(width: 60, alignment: .leading)
+                    .foregroundColor(receiver.isReceiving ? .green : .red)
                 Text("\(receiver.text)")
                     .font(.system(.body, design: .monospaced))
                     .foregroundColor(newMessageHighlight ? .brown : .primary)
