@@ -23,7 +23,12 @@ extension NWConnection.State {
         case .ready:
             return "Ready"
         case .failed(let error):
-            return "Failed (\(error.localizedDescription))"
+            if case let .posix(errorNumber) = error {
+                /// Returning shorter description
+                return "Failed \(POSIXError(errorNumber).localizedDescription.replacingOccurrences(of: "The operation couldn’t be completed. ", with: "")) (\(errorNumber.rawValue))"
+            } else {
+                return "Failed (\(error.localizedDescription))"
+            }
         @unknown default:
             return "Unknown"
         }
@@ -43,12 +48,11 @@ extension NWListener.State {
             return "Ready"
         case .failed(let error):
             if case let .posix(errorNumber) = error {
-                // FIXME: Error description is very long
-                return POSIXError(errorNumber).localizedDescription
+                /// Returning shorter description
+                return "Failed \(POSIXError(errorNumber).localizedDescription.replacingOccurrences(of: "The operation couldn’t be completed. ", with: "")) (\(errorNumber.rawValue))"
             } else {
-            return String(describing: error)
+                return "Failed (\(error.localizedDescription))"
             }
-//            return "Failed (\(error.localizedDescription))"
         @unknown default:
             return "Unknown"
         }
