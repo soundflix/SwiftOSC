@@ -64,20 +64,20 @@ public class OSCClient: NSObject, ObservableObject {
         
         switch newState {
         case .ready:
-            guard let connection = self.connection else {
-                os_log("Client: Error: Client ready but NIL connection.", log: SwiftOSCLog, type: .error)
-                return
+            if let connection  {
+                os_log("Client is ready: %{Public}@", log: SwiftOSCLog, type: .default, String(describing: connection))
+            } else {
+                os_log("Client Error: Ready but NIL connection.", log: SwiftOSCLog, type: .error)
             }
-            os_log("Client is ready: %{Public}@", log: SwiftOSCLog, type: .default, String(describing: connection))
         case .failed(let error):
             os_log("Client failed with error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
-            os_log("Send Client is restarting.", log: SwiftOSCLog, type: .info)
+            os_log("Client is restarting.", log: SwiftOSCLog, type: .info)
             self.setupConnection()
         case .cancelled:
             os_log("Client cancelled.", log: SwiftOSCLog, type: .info)
             break
         case .waiting(let error):
-            os_log("Client waiting with error : %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
+            os_log("Client waiting with error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
         case .preparing:
             os_log("Client is preparing.", log: SwiftOSCLog, type: .info)
             break
@@ -90,7 +90,7 @@ public class OSCClient: NSObject, ObservableObject {
     }
     
     public func startBrowsing() {
-      // TODO:
+      // TODO: NWBrowser
         os_log("NWBrowser not yet implemented", log: SwiftOSCLog, type: .error)
     }
     
