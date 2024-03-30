@@ -14,12 +14,12 @@ public class OSCServer: NSObject, ObservableObject {
     
     public weak var delegate: OSCDelegate?
     
-    public var listener: NWListener?
+    public private(set) var listener: NWListener?
     public private(set) var port: NWEndpoint.Port
     public private(set) var name: String?
     public private(set) var domain: String?
     public private(set) var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Server", qos: .userInteractive)
-    public var connection: NWConnection?
+    public private(set) var connection: NWConnection?
     
     @Published public var listenerState: NWListener.State = .setup
     @Published public var connectionState: NWConnection.State = .setup
@@ -156,7 +156,7 @@ public class OSCServer: NSObject, ObservableObject {
         }
     }
     
-    func decodePacket(_ data: Data){
+    private func decodePacket(_ data: Data){
         
         DispatchQueue.main.async { [weak self] in
             guard let strongSelf = self else { return }
@@ -180,7 +180,7 @@ public class OSCServer: NSObject, ObservableObject {
         }
     }
     
-    func decodeBundle(_ data: Data)->OSCBundle? {
+    private func decodeBundle(_ data: Data)->OSCBundle? {
         
         /// extract timetag
         let bundle = OSCBundle(OSCTimetag(data.subdata(in: 8..<16)))
@@ -214,7 +214,7 @@ public class OSCServer: NSObject, ObservableObject {
         return bundle
     }
     
-    func decodeMessage(_ data: Data)->OSCMessage?{
+    private func decodeMessage(_ data: Data)->OSCMessage?{
         var messageData = data
         var message: OSCMessage
         
@@ -284,7 +284,7 @@ public class OSCServer: NSObject, ObservableObject {
         }
     }
     
-    func sendToDelegate(_ element: OSCElement){
+    private func sendToDelegate(_ element: OSCElement){
         DispatchQueue.main.async { [weak self] in
             guard let strongSelf = self else { return }
             if let message = element as? OSCMessage {
