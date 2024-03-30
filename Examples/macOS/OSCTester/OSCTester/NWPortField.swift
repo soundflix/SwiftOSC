@@ -28,15 +28,14 @@ struct NWPortField: View {
     @State private var newPortString: String = ""
     @FocusState private var portIsFocused: Bool
     
-    @State private var animator: Int = 0
     @State private var animationIsRunning: Bool = false
 
     var body: some View {
         
         TextField("port", text: $newPortString)
             .multilineTextAlignment(.trailing)
-            .frame(width: 50) /// fits for up to '65535'
-            .offset(x: animationIsRunning ? 5 : 0)
+            .frame(width: 50) /// fits for up to width of '65535'
+            .offset(x: animationIsRunning ? 16 : 0)
             .onAppear {
                 oldPort = $port.wrappedValue
                 newPortString = String(oldPort.rawValue)
@@ -54,13 +53,12 @@ struct NWPortField: View {
                     port = oldPort
                     newPortString = String(oldPort.rawValue)
                     
-                    // FIXME: animation has random white flashes on background
+                    // FIXME: animation has random white flashes on background when offset x in +(0... 15)
                     animationIsRunning = true
                     withAnimation(Animation.spring(response: 0.2, dampingFraction: 0.2, blendDuration: 0.2)) {
                         animationIsRunning = false
                     }
                 }
-                // print("PortField submitted \(port.rawValue)")
             }
             .onExitCommand {
                 portIsFocused = false
