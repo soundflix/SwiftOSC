@@ -171,7 +171,7 @@ public struct OSCAddressPattern {
         
     }
     
-    // Returns True if the address matches the address pattern.
+    /// Returns True if the address matches the address pattern.
     public func matches(_ address: OSCAddress)->Bool{
         var matches = true
         autoreleasepool {
@@ -182,7 +182,7 @@ public struct OSCAddressPattern {
         return matches
     }
     
-    // Returns True if the address is along the path of the address pattern
+    /// Returns True if the address is along the path of the address pattern
     public func matches(path: OSCAddress)->Bool{
         var matches = true
         autoreleasepool {
