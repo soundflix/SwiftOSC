@@ -21,7 +21,7 @@ import Network
 /// This range is used for private or customized services, for temporary purposes, and for automatic allocation of ephemeral ports.
 ///
 /// See: [List of TCP and UDP port numbers]( https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers)
-struct PortField: View {
+struct NWPortField: View {
     
     @Binding var port: NWEndpoint.Port
     @State private var oldPort: NWEndpoint.Port = NWEndpoint.Port(integerLiteral: 0)
@@ -73,11 +73,11 @@ struct PortField: View {
 struct PortField_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            PortField(port: .constant(NWEndpoint.Port(integerLiteral: UInt16(7004))))
+            NWPortField(port: .constant(NWEndpoint.Port(integerLiteral: UInt16(7004))))
             
-            PortField(port: .constant(NWEndpoint.Port(integerLiteral: UInt16(0))))
+            NWPortField(port: .constant(NWEndpoint.Port(integerLiteral: UInt16(0))))
             
-            PortField(port: .constant(NWEndpoint.Port(integerLiteral: UInt16(Int(65535)))))
+            NWPortField(port: .constant(NWEndpoint.Port(integerLiteral: UInt16(Int(65535)))))
             
 //            PortField(port: .constant(UInt16(111111111111111111111111111111)))
             // Integer literal '111111111111111111111111111111' overflows when stored into 'UInt16'

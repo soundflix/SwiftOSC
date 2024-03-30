@@ -45,7 +45,7 @@ struct ContentView: View {
                     .foregroundColor(.gray)
                 Image(systemName: "link")
                     .foregroundColor(client.connectionState == .ready ? .green : .red)
-                PortField(port: $clientPort)
+                NWPortField(port: $clientPort)
                     .onChange(of: clientPort) { _ in
                         newClient()
                     }
@@ -80,7 +80,7 @@ struct ContentView: View {
                     .foregroundColor(server.listenerState == .ready ? .green : .red)
                 Image(systemName: "link")
                     .foregroundColor(server.connectionState == .ready ? .green : .red)
-                PortField(port: $serverPort)
+                NWPortField(port: $serverPort)
                     .onChange(of: serverPort) { _ in
                         newServer()
                         receiver.reset()

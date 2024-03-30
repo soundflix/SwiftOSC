@@ -16,7 +16,7 @@
 		DC2447872BB22BDF00792D7F /* OSCReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2447862BB22BDF00792D7F /* OSCReceiver.swift */; };
 		DC24478B2BB253A700792D7F /* ext OSCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC24478A2BB253A700792D7F /* ext OSCClient.swift */; };
 		DCBA87482BB36B14004F94C9 /* OSCSenderField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBA87472BB36B14004F94C9 /* OSCSenderField.swift */; };
-		DCBA874A2BB434CA004F94C9 /* PortField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBA87492BB434CA004F94C9 /* PortField.swift */; };
+		DCBA874A2BB434CA004F94C9 /* NWPortField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBA87492BB434CA004F94C9 /* NWPortField.swift */; };
 		DCCEED372BB581BF000F0D20 /* ext OSCMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCCEED362BB581BF000F0D20 /* ext OSCMessage.swift */; };
 /* End PBXBuildFile section */
 
@@ -45,7 +45,7 @@
 		DC2447862BB22BDF00792D7F /* OSCReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSCReceiver.swift; sourceTree = "<group>"; };
 		DC24478A2BB253A700792D7F /* ext OSCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ext OSCClient.swift"; sourceTree = "<group>"; };
 		DCBA87472BB36B14004F94C9 /* OSCSenderField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSCSenderField.swift; sourceTree = "<group>"; };
-		DCBA87492BB434CA004F94C9 /* PortField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortField.swift; sourceTree = "<group>"; };
+		DCBA87492BB434CA004F94C9 /* NWPortField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NWPortField.swift; sourceTree = "<group>"; };
 		DCCEED362BB581BF000F0D20 /* ext OSCMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ext OSCMessage.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,10 +84,10 @@
 				DC2447722BB20AE400792D7F /* OSCTesterApp.swift */,
 				DC2447742BB20AE400792D7F /* ContentView.swift */,
 				DCBA87472BB36B14004F94C9 /* OSCSenderField.swift */,
+				DCBA87492BB434CA004F94C9 /* NWPortField.swift */,
 				DC2447862BB22BDF00792D7F /* OSCReceiver.swift */,
 				DC24478A2BB253A700792D7F /* ext OSCClient.swift */,
 				DCCEED362BB581BF000F0D20 /* ext OSCMessage.swift */,
-				DCBA87492BB434CA004F94C9 /* PortField.swift */,
 				DC2447762BB20AE500792D7F /* Assets.xcassets */,
 				DC24477B2BB20AE500792D7F /* OSCTester.entitlements */,
 				DC2447782BB20AE500792D7F /* Preview Content */,
@@ -188,7 +188,7 @@
 				DCCEED372BB581BF000F0D20 /* ext OSCMessage.swift in Sources */,
 				DC2447732BB20AE400792D7F /* OSCTesterApp.swift in Sources */,
 				DC24478B2BB253A700792D7F /* ext OSCClient.swift in Sources */,
-				DCBA874A2BB434CA004F94C9 /* PortField.swift in Sources */,
+				DCBA874A2BB434CA004F94C9 /* NWPortField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
