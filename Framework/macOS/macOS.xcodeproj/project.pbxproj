@@ -31,7 +31,6 @@
 		034EE05B21D6159B00C4DD61 /* OSCAddressPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034EE04621D6159B00C4DD61 /* OSCAddressPattern.swift */; };
 		DC0E478928E4440F00A27541 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0E478828E4440F00A27541 /* Log.swift */; };
 		DC2447892BB23D6B00792D7F /* ext Network State.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2447882BB23D6B00792D7F /* ext Network State.swift */; };
-		DCCE64B22BB8556D00CBA669 /* NWPortField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCCE64B12BB8556D00CBA669 /* NWPortField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,7 +60,6 @@
 		034EE04621D6159B00C4DD61 /* OSCAddressPattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSCAddressPattern.swift; sourceTree = "<group>"; };
 		DC0E478828E4440F00A27541 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		DC2447882BB23D6B00792D7F /* ext Network State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ext Network State.swift"; sourceTree = "<group>"; };
-		DCCE64B12BB8556D00CBA669 /* NWPortField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NWPortField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,7 +94,6 @@
 		034EE02C21D6159B00C4DD61 /* SwiftOSC */ = {
 			isa = PBXGroup;
 			children = (
-				DCCE64B02BB8554F00CBA669 /* Views */,
 				DC0E478728E443FD00A27541 /* Log */,
 				034EE02D21D6159B00C4DD61 /* Types */,
 				034EE03621D6159B00C4DD61 /* Network */,
@@ -171,14 +168,6 @@
 				DC0E478828E4440F00A27541 /* Log.swift */,
 			);
 			path = Log;
-			sourceTree = "<group>";
-		};
-		DCCE64B02BB8554F00CBA669 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				DCCE64B12BB8556D00CBA669 /* NWPortField.swift */,
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -275,7 +264,6 @@
 				034EE04D21D6159B00C4DD61 /* OSCString.swift in Sources */,
 				034EE04F21D6159B00C4DD61 /* OSCDelegate.swift in Sources */,
 				034EE05721D6159B00C4DD61 /* OSCMessage.swift in Sources */,
-				DCCE64B22BB8556D00CBA669 /* NWPortField.swift in Sources */,
 				034EE05421D6159B00C4DD61 /* Data.swift in Sources */,
 				DC2447892BB23D6B00792D7F /* ext Network State.swift in Sources */,
 				034EE05A21D6159B00C4DD61 /* OSCAddress.swift in Sources */,
