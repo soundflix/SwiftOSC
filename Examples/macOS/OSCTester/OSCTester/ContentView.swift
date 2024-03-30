@@ -12,7 +12,7 @@ import Network
 struct ContentView: View {
     @EnvironmentObject var client: OSCClient
     @EnvironmentObject var server: OSCServer
-    @StateObject private var receiver = OSCReceiver()
+    @StateObject private var receiver = OSCReceiver(for: .page1)
     
     @State private var clientPort: NWEndpoint.Port = 7004
     @State private var serverPort: NWEndpoint.Port = 9004
@@ -26,7 +26,7 @@ struct ContentView: View {
     
     func newClient() {
         client.restart(port: clientPort)
-        client.push()
+        client.push(.page1)
     }
     
     var body: some View {
@@ -118,7 +118,7 @@ struct ContentView: View {
         .padding()
         .onAppear {
             server.delegate = receiver
-            client.push()
+            client.push(.page1)
         }
     }
 }
