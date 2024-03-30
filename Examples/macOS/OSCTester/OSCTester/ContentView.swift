@@ -62,7 +62,7 @@ struct ContentView: View {
                     .foregroundColor(.red)
             }
             .frame(height: 25)
-            OSCSenderField(client: client)
+            OSCSendField(client: client)
             
             Divider()
             HStack {

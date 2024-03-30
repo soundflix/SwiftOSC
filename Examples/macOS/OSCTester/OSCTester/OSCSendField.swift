@@ -8,9 +8,11 @@
 import SwiftUI
 import SwiftOSC
 
-struct OSCSenderField: View {
+struct OSCSendField: View {
     let client: OSCClient
+    let value: CGFloat = 60
     @State private var address = "/1/mute/1/3"
+    // TODO: extend to any OSCType?
     @State private var float: Float = 1.0
     
     private func send() {
@@ -30,12 +32,13 @@ struct OSCSenderField: View {
                 .onSubmit {
                     send()
                 }
+                .frame(width: value)
         }
     }
 }
 
 struct OSCSender_Previews: PreviewProvider {
     static var previews: some View {
-        OSCSenderField(client: OSCClient(host: "localhost", port: 9004))
+        OSCSendField(client: OSCClient(host: "localhost", port: 9004))
     }
 }
