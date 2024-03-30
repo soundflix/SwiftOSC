@@ -8,10 +8,19 @@
 import SwiftUI
 import SwiftOSC
 
-struct OSCSenderField: View {
+struct OSCSendField: View {
     let client: OSCClient
+    let floatWidth: CGFloat
     @State private var address = "/1/mute/1/3"
-    @State private var float: Float = 1.0
+    // TODO: extend to any OSCType?
+    @State private var float: Float
+    
+    init(client: OSCClient, address: String = "/1/mute/1/3", float: Float = 1.0, floatWidth: CGFloat = 60) {
+        self.client = client
+        self.address = address
+        self.float = float
+        self.floatWidth = floatWidth
+    }
     
     private func send() {
         client.sendFloat(address: address, AFloat: float)
@@ -30,12 +39,13 @@ struct OSCSenderField: View {
                 .onSubmit {
                     send()
                 }
+                .frame(width: floatWidth)
         }
     }
 }
 
 struct OSCSender_Previews: PreviewProvider {
     static var previews: some View {
-        OSCSenderField(client: OSCClient(host: "localhost", port: 9004))
+        OSCSendField(client: OSCClient(host: "localhost", port: 9004))
     }
 }
