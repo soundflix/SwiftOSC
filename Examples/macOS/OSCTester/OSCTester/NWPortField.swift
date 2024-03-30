@@ -35,7 +35,7 @@ struct NWPortField: View {
         TextField("port", text: $newPortString)
             .multilineTextAlignment(.trailing)
             .frame(width: 50) /// fits for up to width of '65535'
-            .offset(x: animationIsRunning ? 16 : 0)
+            .offset(x: animationIsRunning ? 8 : 0)
             .onAppear {
                 oldPort = $port.wrappedValue
                 newPortString = String(oldPort.rawValue)
@@ -53,11 +53,10 @@ struct NWPortField: View {
                     port = oldPort
                     newPortString = String(oldPort.rawValue)
                     
-                    // FIXME: animation has random white flashes on background when offset x in +(0... 15)
-                    animationIsRunning = true
                     withAnimation(Animation.spring(response: 0.2, dampingFraction: 0.2, blendDuration: 0.2)) {
-                        animationIsRunning = false
+                        animationIsRunning = true
                     }
+                    animationIsRunning = false
                 }
             }
             .onExitCommand {
