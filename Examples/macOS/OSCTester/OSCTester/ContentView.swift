@@ -37,8 +37,6 @@ struct ContentView: View {
                 Button("Restart") {
                     client.restart()
                 }
-//                Text("\(client.connection.debugDescription)")
-//                    .foregroundColor(.secondary)
             }
             HStack {
                 Image(systemName: "square.and.arrow.up")
@@ -49,15 +47,12 @@ struct ContentView: View {
                     .onChange(of: clientPort) { _ in
                         newClient()
                     }
-                Text(" ----- ")
-                    .foregroundColor(.secondary)
-                    .frame(idealWidth: 200)
                 Divider()
                 Text("\(client.connectionState.description)")
                     .foregroundColor(client.connectionState != .ready ? .red : .secondary)
                     .frame(idealWidth: 200)
                 Divider()
-                Text("\(String(describing: client.sendError))")
+                Text("\(client.errorDescription ?? "")")
                     .frame(idealWidth: 200)
                     .foregroundColor(.red)
             }
@@ -86,12 +81,13 @@ struct ContentView: View {
                         newServer()
                         receiver.reset()
                     }
-                Text("\(server.listenerState.description)")
-                    .foregroundColor(server.listenerState != .ready ? .red : .secondary)
-                    .frame(idealWidth: 200)
                 Divider()
                 Text("\(server.connectionState.description)")
                     .foregroundColor(server.connectionState != .ready ? .red : .secondary)
+                    .frame(idealWidth: 200)
+                Divider()
+                Text("\(server.listenerState.description)")
+                    .foregroundColor(server.listenerState != .ready ? .red : .secondary)
                     .frame(idealWidth: 200)
             }
             .frame(height: 25)
