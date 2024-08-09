@@ -100,7 +100,7 @@ public class OSCServer {
             guard let self = self else { os_log("Server stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error); return }
             switch newState {
             case .ready:
-                os_log("Server '%{Public}@': Ready, listening on port %{Public}@, delegate: %{Public}@", log: SwiftOSCLog, type: .default, self.name ?? "<noName>", String(describing: self.listener?.port ?? 0), String(describing: self.delegate))
+                os_log("Server '%{Public}@': Ready, listening on port %{Public}@, delegate: %{Public}@, indicatesPort: %d", log: SwiftOSCLog, type: .default, self.name ?? "<noName>", String(describing: self.listener?.port ?? 0), String(describing: self.delegate), self.indicatesPort)
             case .failed(let error):
                 // there are .dns() and .tls() cases, too
                 // [48: Address already in use]
