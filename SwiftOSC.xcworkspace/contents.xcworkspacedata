@@ -13,6 +13,9 @@
    <FileRef
       location = "group:SwiftOSC.podspec">
    </FileRef>
+   <FileRef
+      location = "group:Package.swift">
+   </FileRef>
    <Group
       location = "group:Examples"
       name = "Examples">

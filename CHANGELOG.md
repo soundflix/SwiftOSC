@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [2.1.0 Unreleased]
+## [2.1.0] 2024-08-09
 ### Added
- - Support for watchOS
+ - Alternative delegate method `didReceive(_ message: OSCMessage, port: NWEndpoint.Port)`
  
  ### Changed
  - Fixed OSCClient connection issue following returning from the background in iOS.
@@ -23,7 +23,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Changed OSCType internal variables to oscData and oscTag
 - OSCAddress and OSCAddressPattern initializer now fail if given an incorrect string value
 
-
 ### Added
  - Support for tvOS
  - Inline documentation
@@ -36,11 +35,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - OSCClient loses connection following returning from the background in IOS. 
             Workaround: Restart OSCClient after returning from the background.
 
-## [1.2.3] - 2018-10-30
+## [1.2.3] 2018-10-30
 ### Changed
 - Updated syntax/settings to Swift 4.2/Xcode 10.0
 
-## [1.2.0] - 2018-08-18
+## [1.2.0] 2018-08-18
 ### Added
 - Changelog
 - Compile framework during build for example apps.

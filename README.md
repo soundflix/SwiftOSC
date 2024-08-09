@@ -1,3 +1,8 @@
+# SwiftOSC v2.1
+
+## New features:
+- Alternative delegate method `didReceive(_ message: OSCMessage, port: NWEndpoint.Port)`
+
 # SwiftOSC v2.0
 
 [![License](https://img.shields.io/cocoapods/l/SwiftOSC.svg?style=flat)](https://github.com/devinroth/SwiftOSC/blob/master/LICENSE)
