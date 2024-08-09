@@ -31,6 +31,7 @@
 		034EE05B21D6159B00C4DD61 /* OSCAddressPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034EE04621D6159B00C4DD61 /* OSCAddressPattern.swift */; };
 		DC0E478928E4440F00A27541 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0E478828E4440F00A27541 /* Log.swift */; };
 		DC2447892BB23D6B00792D7F /* ext Network State.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2447882BB23D6B00792D7F /* ext Network State.swift */; };
+		DCD7F56E2BD86980005D41AE /* POSIXError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD7F56D2BD86980005D41AE /* POSIXError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		034EE04621D6159B00C4DD61 /* OSCAddressPattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSCAddressPattern.swift; sourceTree = "<group>"; };
 		DC0E478828E4440F00A27541 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		DC2447882BB23D6B00792D7F /* ext Network State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ext Network State.swift"; sourceTree = "<group>"; };
+		DCD7F56D2BD86980005D41AE /* POSIXError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSIXError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 				034EE03821D6159B00C4DD61 /* OSCServer.swift */,
 				034EE03921D6159B00C4DD61 /* OSCClient.swift */,
 				DC2447882BB23D6B00792D7F /* ext Network State.swift */,
+				DCD7F56D2BD86980005D41AE /* POSIXError.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				034EE04821D6159B00C4DD61 /* OSCTimetag.swift in Sources */,
 				034EE05121D6159B00C4DD61 /* OSCClient.swift in Sources */,
 				034EE04D21D6159B00C4DD61 /* OSCString.swift in Sources */,
+				DCD7F56E2BD86980005D41AE /* POSIXError.swift in Sources */,
 				034EE04F21D6159B00C4DD61 /* OSCDelegate.swift in Sources */,
 				034EE05721D6159B00C4DD61 /* OSCMessage.swift in Sources */,
 				034EE05421D6159B00C4DD61 /* Data.swift in Sources */,

@@ -52,9 +52,19 @@ struct ContentView: View {
                     .foregroundColor(client.connectionState != .ready ? .red : .secondary)
                     .frame(idealWidth: 200)
                 Divider()
-                Text("\(client.errorDescription ?? "")")
+                Text("clientState")
+                    .foregroundColor(client.connectionState != .ready ? .red : .secondary)
                     .frame(idealWidth: 200)
-                    .foregroundColor(.red)
+//                Divider()
+//                Text("\(client.errorDescription ?? "")")
+//                    .frame(idealWidth: 200)
+//                    .foregroundColor(.red)
+                if let description = client.errorDescription {
+                    Divider()
+                    Text("\(description)")
+                        .foregroundColor(client.sendState != .ready ? .red : .secondary)
+                        .frame(idealWidth: 200)
+                }
             }
             .frame(height: 25)
             OSCSendField(client: client, floatWidth: 40)
@@ -89,6 +99,12 @@ struct ContentView: View {
                 Text("\(server.listenerState.description)")
                     .foregroundColor(server.listenerState != .ready ? .red : .secondary)
                     .frame(idealWidth: 200)
+                if let description = server.errorDescription {
+                    Divider()
+                    Text("\(description)")
+                        .foregroundColor(server.listenerState != .ready ? .red : .secondary)
+                        .frame(idealWidth: 200)
+                }
             }
             .frame(height: 25)
             HStack {

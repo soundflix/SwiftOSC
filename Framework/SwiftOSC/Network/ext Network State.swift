@@ -25,15 +25,36 @@ extension NWConnection.State {
         case .failed(let error):
             if case let .posix(errorNumber) = error {
                 /// Returning shorter description
-                return "Failed \(POSIXError(errorNumber).localizedDescription.replacingOccurrences(of: "The operation couldn’t be completed. ", with: "")) (\(errorNumber.rawValue))"
+                return "Failed: \(POSIXError(errorNumber).message)"
             } else {
-                return "Failed (\(error.localizedDescription))"
+                return "Failed: \(error.localizedDescription)"
             }
         @unknown default:
             return "Unknown"
         }
     }
 }
+
+//extension NWConnection.State: RawRepresentable {
+//    puplic var rawValue: String {
+//        switch self {
+//        case .setup:
+//            return "Setup"
+//        case .waiting(_):
+//            return "Waiting"
+//        case .preparing:
+//            return "Prepa"
+//        case .ready:
+//            <#code#>
+//        case .failed(_):
+//            <#code#>
+//        case .cancelled:
+//            <#code#>
+//        @unknown default:
+//            <#code#>
+//        }
+//    }
+//}
 
 extension NWListener.State {
     public var description: String {
@@ -49,9 +70,9 @@ extension NWListener.State {
         case .failed(let error):
             if case let .posix(errorNumber) = error {
                 /// Returning shorter description
-                return "Failed \(POSIXError(errorNumber).localizedDescription.replacingOccurrences(of: "The operation couldn’t be completed. ", with: "")) (\(errorNumber.rawValue))"
+                return "Failed: \(POSIXError(errorNumber).message)"
             } else {
-                return "Failed (\(error.localizedDescription))"
+                return "Failed: \(error.localizedDescription)"
             }
         @unknown default:
             return "Unknown"
