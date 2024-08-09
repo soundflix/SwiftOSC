@@ -7,14 +7,22 @@
 //
 
 import Foundation
+import Network
 
 public protocol OSCDelegate: AnyObject {
     func didReceive(_ data: Data)
     func didReceive(_ bundle: OSCBundle)
+    
+    /// OSCServer will use this method instead of `didReceive(_ message:_ port:)` when set with `indicatePort = false` during `init()` (Default setting)
     func didReceive(_ message: OSCMessage)
+    /// OSCServer will use this method instead of `didReceive(_ message:)` when set with `indicatePort = true` during `init()`
+    func didReceive(_ message: OSCMessage, port: NWEndpoint.Port)
 }
+
 extension OSCDelegate {
-    public func didReceive(_ data: Data){}
-    public func didReceive(_ bundle: OSCBundle){}
-    public func didReceive(_ message: OSCMessage){}
+    public func didReceive(_ data: Data) {}
+    public func didReceive(_ bundle: OSCBundle) {}
+    
+    public func didReceive(_ message: OSCMessage) {}
+    public func didReceive(_ message: OSCMessage, port: NWEndpoint.Port) {}
 }

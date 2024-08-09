@@ -20,9 +20,11 @@ public class OSCServer {
     public private(set) var domain: String?
     public private(set) var queue: DispatchQueue = DispatchQueue(label: "SwiftOSC Server", qos: .userInteractive)
     public var connection: NWConnection?
+    /// When this flag is set, the server uses delegate method didReceive(_:port:) instead of didReceive(_:)
+    public private(set) var indicatesPort: Bool
     
     // TODO: why does init have to be failing?
-    public init?(port: UInt16, bonjourName: String? = nil, delegate: OSCDelegate? = nil, domain: String? = nil) {
+    public init?(port: UInt16, bonjourName: String? = nil, delegate: OSCDelegate? = nil, domain: String? = nil, indicatesPort: Bool = false) {
         
         self.delegate = delegate
         self.domain = domain
@@ -32,6 +34,7 @@ public class OSCServer {
         }
         
         self.port = NWEndpoint.Port(integerLiteral: port)
+        self.indicatesPort = indicatesPort
         
         setupListener()
     }
@@ -138,6 +141,7 @@ public class OSCServer {
     
     func decodePacket(_ data: Data){
         
+        // FIXME: What is GCD doing here on 'main'?
         DispatchQueue.main.async { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.delegate?.didReceive(data)
@@ -266,26 +270,34 @@ public class OSCServer {
     
     func sendToDelegate(_ element: OSCElement){
         
+        // FIXME: What is GCD doing here on 'main'?
         DispatchQueue.main.async { [weak self] in
-            guard let strongSelf = self else { return }
+            guard let self = self else { return }
+            
             if let message = element as? OSCMessage {
-                strongSelf.delegate?.didReceive(message)
+                if self.indicatesPort {
+                    self.delegate?.didReceive(message, port: self.port)
+                } else {
+                    self.delegate?.didReceive(message)
+                }
             }
+            
             if let bundle = element as? OSCBundle {
                 
                 /// send to delegate at the correct time
                 if bundle.timetag.secondsSinceNow < 0 {
-                    strongSelf.delegate?.didReceive(bundle)
+                    self.delegate?.didReceive(bundle)
                     for element in bundle.elements {
-                        strongSelf.sendToDelegate(element)
+                        self.sendToDelegate(element)
                     }
                 } else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + bundle.timetag.secondsSinceNow, execute: {
-                        [weak self] in
-                            guard let strongSelf = self else { return }
-                        strongSelf.delegate?.didReceive(bundle)
+                    // FIXME: What is GCD doing here on 'main'?
+                    DispatchQueue.main.asyncAfter(deadline: .now() + bundle.timetag.secondsSinceNow, execute: { [weak self] in
+                        guard let self = self else { return }
+                        
+                        self.delegate?.didReceive(bundle)
                         for element in bundle.elements {
-                            strongSelf.sendToDelegate(element)
+                            self.sendToDelegate(element)
                         }
                     })
                 }
