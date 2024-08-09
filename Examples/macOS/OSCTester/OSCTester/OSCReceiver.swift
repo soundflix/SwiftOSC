@@ -12,19 +12,21 @@ class OSCReceiver: ObservableObject, OSCDelegate {
     
     let localDebug = true // DEBUG
     
-    let page: OSCClient.TotalMixPage
-    // differentiate RECEIVING != RECEIVING Page X
-    var isPageReceiving = false {
+    // The TotalMix OSC page this receiver is responsible for
+    let ownPage: OSCClient.TotalMixPage
+    
+    // A flag that shows if this receiver's last received message was on his own page
+    var isOwnPageReceiving = false {
         didSet {
 //            if !isPageReceiving { print("isPageReceiving = false")}
-            isPageReceiveTimer?.invalidate()
+            pageReceiveTimer?.invalidate()
             /// withTimeIntervall: 2.05 seems absolute minmum
-            isPageReceiveTimer = Timer.scheduledTimer(withTimeInterval: 2.1, repeats: false) { _ in
-                self.isPageReceiving = false
+            pageReceiveTimer = Timer.scheduledTimer(withTimeInterval: 2.1, repeats: false) { _ in
+                self.isOwnPageReceiving = false
             }
         }
     }
-    var isPageReceiveTimer: Timer?
+    var pageReceiveTimer: Timer?
     
     @Published var isReceiving = false {
         didSet {
@@ -43,7 +45,7 @@ class OSCReceiver: ObservableObject, OSCDelegate {
     var bundleNumber = 0
     
     init(for page: OSCClient.TotalMixPage) {
-        self.page = page
+        self.ownPage = page
     }
     
     // FIXME: Design goal: get sender channel (server connection port), identify refresh bundles and their end
@@ -85,6 +87,7 @@ class OSCReceiver: ObservableObject, OSCDelegate {
     }
     
     func didReceive(_ bundle: OSCBundle) {
+        /// Receiving bundles - not single messages - should make tests affordable during bursts
         // FIXME: set on async main queue may delay internal update?!
         DispatchQueue.main.async {
             self.isReceiving = true
@@ -93,21 +96,23 @@ class OSCReceiver: ObservableObject, OSCDelegate {
         bundleNumber += 1
         let elementCount = bundle.elements.count
         guard let firstMessage = bundle.elements.first as? OSCMessage else { return }
+        
+        if firstMessage.address == OSCMessage.TMP1Pulse.address {
+            isOwnPageReceiving = true
+            Swift.print(".", terminator: "")
+            return
+        }
+        
         testForOwnPage(message: firstMessage)
         
         switch elementCount {
         case 1:
-            if firstMessage.address == OSCMessage.TMP1Pulse.address {
-                Swift.print(".", terminator: "")
-                return
-            }
             print("OSCReceiver: bundle \(bundleNumber) \(bundle.elements.count)")
         case 3:
+            /// Ditches all 3 messages at once
             if firstMessage.address == OSCMessage.TMP3Pulse.address {
-                print("OSCReceiver: pulse page 3")
-                DispatchQueue.main.async {
-                    self.isReceiving = true
-                }
+//                print("OSCReceiver: pulse page 3")
+                Swift.print(":", terminator: "")
                 return
             }
             print("OSCReceiver: bundle \(bundleNumber) \(bundle.description)")
@@ -127,9 +132,12 @@ class OSCReceiver: ObservableObject, OSCDelegate {
     }
     
     private func testForOwnPage(message: OSCMessage) {
-        if message.address.string.starts(with: page.address.string) {
-            isPageReceiving = true
-            print("receive matches \(page)")
+        if message.address.string.starts(with: ownPage.address.string) {
+            isOwnPageReceiving = true
+            print("+receive matches \(ownPage)")
+        } else {
+            isOwnPageReceiving = false
+            print("-receive NO match for \(ownPage)")
         }
     }
     

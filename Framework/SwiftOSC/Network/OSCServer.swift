@@ -23,6 +23,8 @@ public class OSCServer: NSObject, ObservableObject {
     
     @Published public var listenerState: NWListener.State = .setup
     @Published public var connectionState: NWConnection.State = .setup
+    /// Human-readable description of errors in listener and connection handling.
+    @Published public var errorDescription: String?
     
     public init(port: UInt16, bonjourName: String? = nil, delegate: OSCDelegate? = nil, domain: String? = nil) {
         self.delegate = delegate
@@ -40,6 +42,9 @@ public class OSCServer: NSObject, ObservableObject {
     }
     
     private func setupListener() {
+        DispatchQueue.main.async {
+            self.errorDescription = nil
+        }
         
         /// listener parameters
         let udpOption = NWProtocolUDP.Options()
@@ -51,6 +56,10 @@ public class OSCServer: NSObject, ObservableObject {
         do {
             listener = try NWListener(using: params, on: port)
         } catch let error {
+            DispatchQueue.main.async {
+                // FIXME: Check output & format of description
+                self.errorDescription = error.localizedDescription
+            }
             os_log("Server failed to create listener: %{Public}@", log: SwiftOSCLog, type: .error, String(describing: error))
         }
         
@@ -99,6 +108,7 @@ public class OSCServer: NSObject, ObservableObject {
                 DispatchQueue.main.async {
                     self.connectionState = newState
                 }
+                // TODO: get connection states & errors like in OSCClient
             }
 
             self.connection?.start(queue: (self.queue))
@@ -110,15 +120,18 @@ public class OSCServer: NSObject, ObservableObject {
             guard let self = self else { os_log("Server.listener stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error); return }
             DispatchQueue.main.async {
                 self.listenerState = newState
+                self.errorDescription = nil
             }
             switch newState {
             case .ready:
                 os_log("Server '%{Public}@': Ready, listening on port %{Public}@, delegate: %{Public}@", log: SwiftOSCLog, type: .default, self.name ?? "<noName>", String(describing: self.listener?.port ?? 0), String(describing: self.delegate))
             case .failed(let error):
                 // there are .dns() and .tls() cases, too
-                // [48: Address already in use]
                 if case let .posix(errorNumber) = error {
-                    os_log("Server '%{Public}@': Listener failed with: %{Public}@: %{Public}@", log: SwiftOSCLog, type: .error, self.name ?? "<noName>", String(describing: errorNumber), String(describing: error))
+                    DispatchQueue.main.async {
+                        self.errorDescription = POSIXError(errorNumber).message
+                    }
+                    os_log("Server '%{Public}@': Listener failed with POSIX error: %{Public}@", log: SwiftOSCLog, type: .error, self.name ?? "<noName>", POSIXError(errorNumber).message)
                 } else {
                     os_log("Server '%{Public}@' failed to create listener: %{Public}@", log: SwiftOSCLog, type: .error, self.name ?? "<noName>", String(describing: error))
                 }

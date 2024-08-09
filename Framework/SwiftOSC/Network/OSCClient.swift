@@ -28,7 +28,9 @@ public class OSCClient: NSObject, ObservableObject {
     }
     
     @Published public var connectionState: NWConnection.State = .setup
-    @Published public var sendError: String = ""
+    @Published public var sendState: OSCClient.state = .setup
+    /// Human-readable description of errors during setup and messaging.
+    @Published public var errorDescription: String?
 
     public init(host: String, port: UInt16) {
         var safeHost = host
@@ -45,7 +47,10 @@ public class OSCClient: NSObject, ObservableObject {
 
     /// setup a new connection
     func setupConnection() {
-
+        DispatchQueue.main.async {
+            self.errorDescription = nil
+        }
+        
         let params = NWParameters.udp
         params.serviceClass = .signaling
         
@@ -59,6 +64,7 @@ public class OSCClient: NSObject, ObservableObject {
     func stateUpdateHandler(newState: NWConnection.State) {
         
         DispatchQueue.main.async {
+            self.errorDescription = nil
             self.connectionState = newState
         }
         
@@ -70,13 +76,18 @@ public class OSCClient: NSObject, ObservableObject {
                 os_log("Client Error: Ready but NIL connection.", log: SwiftOSCLog, type: .error)
             }
         case .failed(let error):
-            os_log("Client failed with error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
-            os_log("Client is restarting.", log: SwiftOSCLog, type: .info)
+            DispatchQueue.main.async {
+                self.errorDescription = error.localizedDescription
+            }
+            os_log("Client failed with error: %{Public}@. Restarting ...", log: SwiftOSCLog, type: .error, error.debugDescription)
             self.setupConnection()
         case .cancelled:
             os_log("Client cancelled.", log: SwiftOSCLog, type: .info)
             break
         case .waiting(let error):
+            DispatchQueue.main.async {
+                self.errorDescription = error.localizedDescription
+            }
             os_log("Client waiting with error: %{Public}@", log: SwiftOSCLog, type: .error, error.debugDescription)
         case .preparing:
             os_log("Client is preparing.", log: SwiftOSCLog, type: .info)
@@ -97,21 +108,21 @@ public class OSCClient: NSObject, ObservableObject {
     public func send(_ element: OSCElement) {
         let data = element.oscData
         connection?.send(content: data, completion: .contentProcessed({ (error) in
-            let errorDescription: String
-            if let error = error {
+            let localErrorDescription: String?
+            if let error {
                 switch error {
                 case .posix(let errorNumber):
-                    errorDescription = "\(POSIXError(errorNumber).localizedDescription.replacingOccurrences(of: "The operation couldn’t be completed. ", with: "")) (\(errorNumber.rawValue))"
+                    localErrorDescription = POSIXError(errorNumber).message
                 case .tls(let osStatus):
-                    errorDescription = " \(error.localizedDescription) (TLS \(osStatus))"
+                    localErrorDescription = "\(error.localizedDescription) (TLS \(osStatus))"
                 case .dns(let dnsServiceError):
-                    errorDescription = "\(error.localizedDescription) (DNS \(dnsServiceError))"
+                    localErrorDescription = "\(error.localizedDescription) (DNS \(dnsServiceError))"
                 @unknown default:
-                    errorDescription = "Unkown send error! \(error.localizedDescription)"
+                    localErrorDescription = "Unkown send error! \(error.localizedDescription)"
                 }
-                os_log("Send error: %{Public}@", log: SwiftOSCLog, type: .error, errorDescription)
+                os_log("Send error: %{Public}@", log: SwiftOSCLog, type: .error, localErrorDescription ?? "")
             } else {
-                errorDescription = ""
+                localErrorDescription = nil
                 if let message = element as? OSCMessage {
                     let successText = "Client \(self.connection?.endpoint.debugDescription ?? "<noConnDesc>") Send success: \(message.description)"
                     os_log("%{Public}@", log: SwiftOSCLog, type: .error, successText)
@@ -119,9 +130,7 @@ public class OSCClient: NSObject, ObservableObject {
             }
             
             DispatchQueue.main.async {
-                self.sendError = errorDescription
-                // TODO: set programmatic error state
-                
+                self.errorDescription = localErrorDescription
             }
         }))
     }
@@ -153,5 +162,14 @@ extension OSCClient {
         let message = OSCMessage(oscAddress, Float(AFloat))
         print("out\(message.description)")
         self.send(message)
+    }
+}
+
+extension OSCClient {
+   public enum state {
+        case setup
+        case ready
+        case failed
+       // TODO: more cases?
     }
 }
