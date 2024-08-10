@@ -40,9 +40,10 @@ struct ContentView: View {
             }
             HStack {
                 Image(systemName: "square.and.arrow.up")
-                    .foregroundColor(.gray)
+                    .foregroundColor(.clear)
                 Image(systemName: "link")
                     .foregroundColor(client.connectionState == .ready ? .green : .red)
+                    .help("client.connectionState")
                 NWPortField(port: $clientPort)
                     .onChange(of: clientPort) { _ in
                         newClient()
@@ -51,19 +52,14 @@ struct ContentView: View {
                 Text("\(client.connectionState.description)")
                     .foregroundColor(client.connectionState != .ready ? .red : .secondary)
                     .frame(idealWidth: 200)
-                Divider()
-                Text("clientState")
-                    .foregroundColor(client.connectionState != .ready ? .red : .secondary)
-                    .frame(idealWidth: 200)
-//                Divider()
-//                Text("\(client.errorDescription ?? "")")
-//                    .frame(idealWidth: 200)
-//                    .foregroundColor(.red)
+                    .help("client.connectionState")
+                
                 if let description = client.errorDescription {
                     Divider()
                     Text("\(description)")
-                        .foregroundColor(client.sendState != .ready ? .red : .secondary)
+                        .foregroundColor(client.sendState == .failed ? .red : .secondary)
                         .frame(idealWidth: 200)
+                        .help("client.errorDescription")
                 }
             }
             .frame(height: 25)
@@ -84,20 +80,24 @@ struct ContentView: View {
             HStack {
                 Image(systemName: "square.and.arrow.down")
                     .foregroundColor(server.listenerState == .ready ? .green : .red)
+                    .help("server.listenerState")
                 Image(systemName: "link")
                     .foregroundColor(server.connectionState == .ready ? .green : .red)
+                    .help("server.connectionState")
                 NWPortField(port: $serverPort)
                     .onChange(of: serverPort) { _ in
                         newServer()
                         receiver.reset()
                     }
                 Divider()
-                Text("\(server.connectionState.description)")
-                    .foregroundColor(server.connectionState != .ready ? .red : .secondary)
-                    .frame(idealWidth: 200)
-                Divider()
                 Text("\(server.listenerState.description)")
                     .foregroundColor(server.listenerState != .ready ? .red : .secondary)
+                    .help("server.listenerState")
+                    .frame(idealWidth: 200)
+                Divider()
+                Text("\(server.connectionState.description)")
+                    .foregroundColor(server.connectionState != .ready ? .red : .secondary)
+                    .help("server.connectionState")
                     .frame(idealWidth: 200)
                 if let description = server.errorDescription {
                     Divider()
@@ -111,6 +111,7 @@ struct ContentView: View {
                 Text("Rcv: \(receiver.messageCount)")
                     .frame(width: 60, alignment: .leading)
                     .foregroundColor(receiver.isReceiving ? .green : .red)
+                    .help("receiver.isReceiving & messageCount")
                 Text("\(receiver.text)")
                     .font(.system(.body, design: .monospaced))
                     .foregroundColor(newMessageHighlight ? .brown : .primary)
