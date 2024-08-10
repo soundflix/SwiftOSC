@@ -28,7 +28,7 @@ public class OSCClient: NSObject, ObservableObject {
     }
     
     @Published public var connectionState: NWConnection.State = .setup
-    @Published public var sendState: OSCClient.state = .setup
+    @Published public var sendState: OSCClient.state = .idle
     /// Human-readable description of errors during setup and messaging.
     @Published public var errorDescription: String?
 
@@ -56,12 +56,11 @@ public class OSCClient: NSObject, ObservableObject {
         
         guard let host = self.host, let port = self.port else { return }
         connection = NWConnection(host: host, port: port, using: params)
-        connection?.stateUpdateHandler = stateUpdateHandler(newState:)
+        connection?.stateUpdateHandler = receive(newState:)
         connection?.start(queue: queue)
-
     }
     
-    func stateUpdateHandler(newState: NWConnection.State) {
+    func receive(newState: NWConnection.State) {
         
         DispatchQueue.main.async {
             self.errorDescription = nil
@@ -106,10 +105,16 @@ public class OSCClient: NSObject, ObservableObject {
     }
     
     public func send(_ element: OSCElement) {
+        sendState = .idle
+        errorDescription = nil
+        
         let data = element.oscData
         connection?.send(content: data, completion: .contentProcessed({ (error) in
             let localErrorDescription: String?
             if let error {
+                DispatchQueue.main.async {
+                    self.sendState = .failed
+                }
                 switch error {
                 case .posix(let errorNumber):
                     localErrorDescription = POSIXError(errorNumber).message
@@ -122,9 +127,10 @@ public class OSCClient: NSObject, ObservableObject {
                 }
                 os_log("Send error: %{Public}@", log: SwiftOSCLog, type: .error, localErrorDescription ?? "")
             } else {
+                /// NOTE: error = nil does NOT mean that the message has been successfully sent, it is "processed"! The error comes afterwards.
                 localErrorDescription = nil
                 if let message = element as? OSCMessage {
-                    let successText = "Client \(self.connection?.endpoint.debugDescription ?? "<noConnDesc>") Send success: \(message.description)"
+                    let successText = "Client \(self.connection?.endpoint.debugDescription ?? "<noDesc>"): Sent \(message.description)"
                     os_log("%{Public}@", log: SwiftOSCLog, type: .error, successText)
                 }
             }
@@ -166,10 +172,9 @@ extension OSCClient {
 }
 
 extension OSCClient {
-   public enum state {
-        case setup
-        case ready
+    public enum state {
+        case idle
+        case success // "processed"
         case failed
-       // TODO: more cases?
     }
 }
