@@ -9,7 +9,7 @@
 import Foundation
 import Network
 
-extension NWConnection.State {
+extension NWConnection.State: CustomStringConvertible {
     public var description: String {
         switch self {
         case .cancelled:
@@ -56,7 +56,7 @@ extension NWConnection.State {
 //    }
 //}
 
-extension NWListener.State {
+extension NWListener.State: CustomStringConvertible {
     public var description: String {
         switch self {
         case .cancelled:
