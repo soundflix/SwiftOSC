@@ -35,7 +35,6 @@ public class OSCServer: NSObject, ObservableObject {
         }
         
         self.port = NWEndpoint.Port(integerLiteral: port)
-        
         super.init()
 
         setupListener()
@@ -50,14 +49,13 @@ public class OSCServer: NSObject, ObservableObject {
         let udpOption = NWProtocolUDP.Options()
         let params = NWParameters(dtls: nil, udp: udpOption)
         params.allowLocalEndpointReuse = true
-        params.serviceClass = .signaling // TODO: compare to standard '.best-effort', faster communication?
+        params.serviceClass = .signaling
         
         /// create the listener
         do {
             listener = try NWListener(using: params, on: port)
         } catch let error {
             DispatchQueue.main.async {
-                // FIXME: Check output & format of description
                 self.errorDescription = error.localizedDescription
             }
             os_log("Server failed to create listener: %{Public}@", log: SwiftOSCLog, type: .error, String(describing: error))
@@ -72,8 +70,11 @@ public class OSCServer: NSObject, ObservableObject {
         }
         
         /// Handle incoming connections, server will only connect to the latest connection
-        listener?.newConnectionHandler = { [weak self] (newConnection) in
-            guard let self = self else { os_log("SwiftOSC Server newConnectionHandler: Error", log: SwiftOSCLog, type: .error); return }
+        listener?.newConnectionHandler = { [weak self] newConnection in
+            guard let self else {
+                os_log("SwiftOSC Server newConnectionHandler: Error", log: SwiftOSCLog, type: .error)
+                return
+            }
 
             // TODO: check if new connection port is TotalMix
             // if endpoint type: case hostPort(host: NWEndpoint.Host, port: NWEndpoint.Port)
@@ -101,14 +102,16 @@ public class OSCServer: NSObject, ObservableObject {
             os_log("Server '%{Public}@': New connection %{Public}@", log: SwiftOSCLog, type: .info, self.name ?? "<noName>", String(describing: newConnection))
             self.connection = newConnection
             
-            
             /// Handle connection state changes
             self.connection?.stateUpdateHandler = { [weak self] (newState) in
-                guard let self = self else { os_log("Server.connection stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error); return }
+                guard let self else {
+                    os_log("Server.connection stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error)
+                    return
+                }
                 DispatchQueue.main.async {
                     self.connectionState = newState
                 }
-                // TODO: get connection states & errors like in OSCClient
+                os_log("Server '%{Public}@': Connection %{Public}@", log: SwiftOSCLog, type: .info, self.name ?? "<noName>", newState.description)
             }
 
             self.connection?.start(queue: (self.queue))
@@ -117,7 +120,10 @@ public class OSCServer: NSObject, ObservableObject {
                 
         /// Handle listener state changes
         listener?.stateUpdateHandler = { [weak self] (newState) in
-            guard let self = self else { os_log("Server.listener stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error); return }
+            guard let self else {
+                os_log("Server.listener stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error)
+                return
+            }
             DispatchQueue.main.async {
                 self.listenerState = newState
                 self.errorDescription = nil
@@ -141,7 +147,6 @@ public class OSCServer: NSObject, ObservableObject {
                 }
             case .cancelled:
                 os_log("Server '%{Public}@': Listener cancelled.", log: SwiftOSCLog, type: .info, self.name ?? "<noName>")
-
             case .setup:
                 break
             case .waiting(_):
