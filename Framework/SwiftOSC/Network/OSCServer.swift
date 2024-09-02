@@ -275,6 +275,7 @@ public class OSCServer {
             guard let self = self else { return }
             
             if let message = element as? OSCMessage {
+                // FIXME: Probably `indicatesPort` is not necessary, delegate methods are optional
                 if self.indicatesPort {
                     self.delegate?.didReceive(message, port: self.port)
                 } else {
@@ -286,7 +287,11 @@ public class OSCServer {
                 
                 /// send to delegate at the correct time
                 if bundle.timetag.secondsSinceNow < 0 {
-                    self.delegate?.didReceive(bundle)
+                    if self.indicatesPort {
+                        self.delegate?.didReceive(bundle, port: self.port)
+                    } else {
+                        self.delegate?.didReceive(bundle)
+                    }
                     for element in bundle.elements {
                         self.sendToDelegate(element)
                     }
@@ -294,8 +299,11 @@ public class OSCServer {
                     // FIXME: What is GCD doing here on 'main'?
                     DispatchQueue.main.asyncAfter(deadline: .now() + bundle.timetag.secondsSinceNow, execute: { [weak self] in
                         guard let self = self else { return }
-                        
-                        self.delegate?.didReceive(bundle)
+                        if self.indicatesPort {
+                            self.delegate?.didReceive(bundle, port: self.port)
+                        } else {
+                            self.delegate?.didReceive(bundle)
+                        }
                         for element in bundle.elements {
                             self.sendToDelegate(element)
                         }
