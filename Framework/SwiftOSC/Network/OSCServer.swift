@@ -51,7 +51,7 @@ public class OSCServer {
         do {
             listener = try NWListener(using: params, on: port)
         } catch let error {
-            os_log("Server failed to create listener: %{Public}@", log: SwiftOSCLog, type: .error, String(describing: error))
+            os_log("Server failed to create listener: %{Public}@", log: SwiftOSCLog, type: .error, error.localizedDescription)
         }
         
         /// Bonjour service
@@ -64,8 +64,9 @@ public class OSCServer {
         
         /// handle incoming connections server will only connect to the latest connection
         listener?.newConnectionHandler = { [weak self] (newConnection) in
-            guard let self = self else { os_log("SwiftOSC Server newConnectionHandler: Error", log: SwiftOSCLog, type: .error); return }
-            os_log("Server '%{Public}@': New connection %{Public}@", log: SwiftOSCLog, type: .info, self.name ?? "<noName>", String(describing: newConnection))
+            guard let self else { return }
+            
+            os_log("Server '%{Public}@': New connection %{Public}@", log: SwiftOSCLog, type: .default, self.name ?? "<noName>", newConnection.debugDescription)
 
             // TODO: check if new connection port is TotalMix
             // if endpoint type: case hostPort(host: NWEndpoint.Host, port: NWEndpoint.Port)
@@ -82,32 +83,32 @@ public class OSCServer {
 //                break
 //            }
             
-            /// cancel previous connection // check if it's own port
+            /// Cancel previous connection
             if self.connection != nil {
-                guard let connection = self.connection else { os_log("Server: Can not cancel NIL connection.", log: SwiftOSCLog, type: .error); return }
-                os_log("Server '%{Public}@': Cancelling connection %{Public}@", log: SwiftOSCLog, type: .info, self.name ?? "<noName>", String(describing: connection))
+                os_log("Server '%{Public}@': Cancelling previous connection %{Public}@", log: SwiftOSCLog, type: .default, self.name ?? "<noName>", connection.debugDescription)
                 self.connection?.cancel()
             }
             
-            /// start new connection
+            /// Start new connection
             self.connection = newConnection
-            self.connection?.start(queue: (self.queue))
+            self.connection?.start(queue: self.queue)
             self.receive()
         }
-                
+        
         /// Handle listener state changes
-        listener?.stateUpdateHandler = { [weak self] (newState) in
-            guard let self = self else { os_log("Server stateUpdateHandler: Error.", log: SwiftOSCLog, type: .error); return }
+        listener?.stateUpdateHandler = { [weak self] newState in
+            guard let self else { return }
+            
             switch newState {
             case .ready:
-                os_log("Server '%{Public}@': Ready, listening on port %{Public}@, delegate: %{Public}@, indicatesPort: %d", log: SwiftOSCLog, type: .default, self.name ?? "<noName>", String(describing: self.listener?.port ?? 0), String(describing: self.delegate), self.indicatesPort)
+                os_log("Server '%{Public}@': Ready, listening on port %{Public}@, delegate: %{Public}@, indicatesPort: %{Public}@", log: SwiftOSCLog, type: .default, self.name ?? "<noName>", String(describing: self.listener?.port ?? 0), delegateDescription(), self.indicatesPort.description)
             case .failed(let error):
                 // there are .dns() and .tls() cases, too
                 // [48: Address already in use]
                 if case let .posix(errorNumber) = error {
-                    os_log("Server '%{Public}@': Listener failed with: %{Public}@: %{Public}@", log: SwiftOSCLog, type: .error, self.name ?? "<noName>", String(describing: errorNumber), String(describing: error))
+                    os_log("Server '%{Public}@': Listener failed with: %{Public}@: %{Public}@", log: SwiftOSCLog, type: .error, self.name ?? "<noName>", String(describing: errorNumber), error.localizedDescription)
                 } else {
-                    os_log("Server '%{Public}@' failed to create listener: %{Public}@", log: SwiftOSCLog, type: .error, self.name ?? "<noName>", String(describing: error))
+                    os_log("Server '%{Public}@' failed to create listener: %{Public}@", log: SwiftOSCLog, type: .error, self.name ?? "<noName>", error.localizedDescription)
                 }
                 /// wait a little with restart to reduce load
                 // TODO: store timer and cancel on next call!
@@ -115,7 +116,7 @@ public class OSCServer {
                     self.restart()
                 }
             case .cancelled:
-                os_log("Server '%{Public}@': Listener cancelled.", log: SwiftOSCLog, type: .info, self.name ?? "<noName>")
+                os_log("Server '%{Public}@': Listener cancelled.", log: SwiftOSCLog, type: .default, self.name ?? "<noName>")
             default:
                 break
             }
@@ -327,5 +328,16 @@ public class OSCServer {
         
         /// setup new listener
         setupListener()
+    }
+}
+
+extension OSCServer {
+    /// This string dance serves the mere purpose of avoiding ugly "Optional(<someClassName>)" in log.
+    func delegateDescription() -> String {
+        if let delegate = self.delegate {
+            return String(describing: delegate)
+        } else {
+            return "<none>"
+        }
     }
 }
